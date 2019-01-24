@@ -4,11 +4,22 @@
 \documentclass[polish,inz,shortabstract, declaration]{iithesis}
 
 \usepackage[utf8]{inputenc}
-\usepackage{graphicx,listings,amsmath,amsthm,amsfonts,tikz}
+\usepackage{graphicx,listings,amsmath,amsthm,amsfonts}
 \usepackage{subcaption}
-\usepackage[colorinlistoftodos]{todonotes}
+\usepackage{lipsum}
+\usepackage{xargs}
+\usepackage[usenames,dvipsnames]{xcolor}
+\usepackage[colorinlistoftodos,prependcaption,textsize=tiny,shadow]{todonotes}
+\usepackage{booktabs}
 
-\polishtitle    {Wykorzystanie sieci neuronowych do wykrywania zmian\fmlinebreak w obrazach medycznych}
+\newcommandx{\unsure}[2][1=]{\todo[linecolor=red,backgroundcolor=red!25,bordercolor=red,#1]{#2}}
+\newcommandx{\change}[2][1=]{\todo[linecolor=blue,backgroundcolor=blue!25,bordercolor=blue,#1]{#2}}
+\newcommandx{\info}[2][1=]{\todo[linecolor=OliveGreen,backgroundcolor=OliveGreen!25,bordercolor=OliveGreen,#1]{#2}}
+\newcommandx{\improvement}[2][1=]{\todo[linecolor=purple,backgroundcolor=purple!25,bordercolor=purple,#1]{#2}}
+\newcommandx{\add}[2][1=]{\todo[linecolor=Goldenrod,backgroundcolor=Goldenrod!25,bordercolor=Goldenrod,#1]{#2}}
+\newcommandx{\thiswillnotshow}[2][1=]{\todo[disable,#1]{#2}} 
+
+\polishtitle    {Zastosowanie auto-enkoderów wariacyjnych do rozpoznawania zmian na obrazach medycznych}
 \englishtitle   {English title}
 
 \author         {Tomasz Nanowski}
@@ -21,12 +32,13 @@
 
 \begin{document}
 
+\listoftodos[Notes]
+
 \input{chapters/introduction}
 \input{chapters/neuralnets}
 \input{chapters/mnist}
 \input{chapters/medical}
 \input{chapters/experiments}
-\input{chapters/workflow}
 \input{chapters/summary}
 
 %\begin{thebibliography}{1}

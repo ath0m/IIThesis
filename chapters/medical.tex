@@ -1,6 +1,8 @@
-\chapter{Medical Dataset}
+\chapter{Experiments on MRI FLAIR images}
 
-\section{Overview}
+\section{Data description \& preprocessing}
+
+\subsection{Overview}
 
 Dane pochodzą z Duke University. Są to zdjęcia z rezonansu magnetycznego głowy wraz z zaznaczonymi obszarami zmian nowotworowych. Obrazy są rozmiaru 256x256x3. Pierwszy kanał jest zdjęciem wykonanym przed wprowadzeniem kontrastu, drugi w trakcie, a trzeci po. Maski mają rozmiar 256x256, a każdy piksel ma wartość 0 albo 255 (255 oznacza komórkę nowotworową). Na rysunku \ref{fig:medical_description} pokazane są osobne kanały oraz maska.
 
@@ -22,7 +24,7 @@ Dane pogrupowane są dla 110 pacjentów. Zestaw dla jednego z nich znajduje się
 
 Pacjenci zostali podzieleni na 2 zbiory: treningowy (70\%), testowy (30\%). Obrazki oznaczające komórki rakowe będę nazywał pozytywnymi, a tez bez negatywnymi.
 
-\section{Patches}
+\subsection{Patches}
 
 Rekonstrukcje nie chcemy robić od razu z całego obrazku, a jedynie z niewielkich wycinków. Rozmiar wycinków ustalę na podstawie wyników osiąganych przez modele supervised, tj. regresja liniowa, małe cnn (mnist), cnn (cifar10). Będę testował rozmiary 16, 22, 28, 32, 48, 64. 
 
@@ -49,9 +51,9 @@ Na obrazku \ref{fig:supervised_patches} widać wyniki dla poszczególnych modeli
   \caption{The same cup of coffee. Two times.}
   \label{fig:supervised_patches}
 \end{figure}
-\todo{Uzupełnić podpisy}
+\improvement{Uzupełnić podpisy}
 
-\section{Preprocessing}
+\subsection{Preprocessing}
 
 Na obrazku \ref{fig:pixel_sums} przedstawiony jest histogram zsumowanych wartości pikseli dla każdego patchu rozmiaru 22 z podziałem na klasy. Minimalna wartość sumy dla klasy pozytywnej wynosi $56.5$. Oznacza to, że ze zbioru treningowego można usunąć obrazki o mniejszej sumie, gdyż automatycznie są to negatywne obrazki. Usunięcie obrazków o wartości mniejszej niż 42 zmniejszy dane o $45.5\%$ i usunięcie trywialnych przypadków czyli prawie całych czarnych obrazków.
 
@@ -62,8 +64,8 @@ Na obrazku \ref{fig:pixel_sums} przedstawiony jest histogram zsumowanych wartoś
     \label{fig:pixel_sums}
 \end{figure}
 
-\section{Normalizations}
+\subsection{Normalizations}
 
-\todo[inline]{Może LIME?}
+\unsure{Może LIME?}
 
 \todo[inline]{Rozważyć normalizacje: histogramowa, tylko środkowy kanał}

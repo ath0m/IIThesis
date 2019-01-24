@@ -1,4 +1,4 @@
-\chapter{MNIST experiments}
+\chapter{Experiments on MNIST}
 
 \section{MNIST}
 
@@ -34,7 +34,7 @@ Dodatkowo warto byłby zobaczyć jak konkretne cyfry rozrzucane są w przestrzen
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=0.6\textwidth]{images/mnist_2d}
+    \includegraphics[width=1.\textwidth]{images/mnist_2d}
     \caption{}
     \label{fig:mnist_2d}
 \end{figure}
@@ -51,6 +51,10 @@ Rozmiar reprezentacji ukrytej wynosi 10. Analizować natomiast będziemy 2 skła
 \end{figure}
 
 Do określenia jak rzeczywiście dobra jest ta separacja można wykorzystać krzywą ROC. Traktujemy to jako problem binarnej klasyfikacji, gdzie dane z klasy 5 będą oznaczone jako 1, a z [4, 7] jako 0. Wartość confidence to suma kosztów KLD i MSE. Jak widać na rysunku \ref{fig:mnist_roc} takie podejście osiąga prawie 100\% skuteczność. Podobne podejście będę chciał zastosować do danych medycznych.
+
+\subsection{ROC}
+
+Opis ROC
 
 \begin{figure}[h!]
     \centering
