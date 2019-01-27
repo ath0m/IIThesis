@@ -34,15 +34,15 @@ Często autoenkodery po wytrenowaniu nadają się do generowania całkiem nowych
 
 W przypadku podstawowych autoenkoder'ów jednym z problemów jest brak kontroli nad tym jak dane są rozrzucane w przestrzeni. O ile sam model może bardzo dobrze rekonstruować dane, to same ich reprezentacja w przestrzeni może nie być ciągła, tj. pewne obszary nigdy nie były używane i dekoder nie za bardzo wie co zrobić, jeśli wylosujemy wektor z tego regionu. Jest to problemem przy generowaniu nowych danych, bądź interpolowaniu między nimi. W innych natomiast miejscach dane mogą zostać poukładane zbyt ciasno, co skutkować będzie błędną rekonstrukcją na niewidzianych danych. Próbą rozwiązania tych problemów jest właśnie Vaeriational Autoencoder.
 
-Variational autoencoder rozszerza założenia o wprowadzenie modelowania rozkładu prawdopodobieństwa dla reprezentacji ukrytej. Czyli teraz encoder nie produkuje pojedyńczego wektora, ale dwa wektory interpretowane odpowiednio jako średnia $\mu$ oraz wariancja $\sigma$ dla rozkładu Gaussa. Następnie z tych parametrów formowany jest wektor, gdzie $i$-ty element powstał z $i$-tej pary $\mu$, $\sigma$.Dopiero taki wektor trafia do decodera, a z niego rekonstruowany jest wejściowa dana. Schemat przedstawiony jest na rysunku \ref{fig:vae}
+Variational autoencoder rozszerza założenia o wprowadzenie modelowania rozkładu prawdopodobieństwa dla reprezentacji ukrytej. Czyli teraz encoder nie produkuje pojedyńczego wektora, ale dwa wektory interpretowane odpowiednio jako średnia $\mu$ oraz wariancja $\sigma$ dla rozkładu Gaussa. Następnie z tych parametrów formowany jest wektor, gdzie $i$-ty element powstał z $i$-tej pary $\mu$, $\sigma$.Dopiero taki wektor trafia do decodera, a z niego rekonstruowany jest wejściowa dana. Schemat przedstawiony jest na rysunku \ref{fig:vae_model}
 
 Takie generowanie znaczy, że nawet dla tego samego wejścia i podczas gdy średnie oraz odchylenie zostaną takie same, to rzeczywiste kodowanie będzie się mimo wszystko różnić właśnie ze względu na to próbkowanie. 
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=1\textwidth]{images/vae_model}
+    \includegraphics[width=1.0\textwidth]{images/vae_model}
     \caption{Architecture of Variational Autoencoder}
-    \label{fig:vae}
+    \label{fig:vae_model}
 \end{figure}
 
 Intuicyjnie wektor średnich oznacza, gdzie zakodowana zmienna powinna być wycentrowana, natomiast odchylenie kontroluje obszar, wokół którego kodowanie może się różnić. Podczas gdy kodowanie jest losowane z wewnątrz koła, dekoder uczy się, że nie jedynie pojedynczy punkt z utajonej przestrzeni odnosi się do próbki, ale wszystkie punkty znajdujące się w pobliżu odnoszą się również do tego samego. To pozwala dekoderowi dekodować nie tylko pojedyncze, specyficzne reprezentacje (zostawiając przestrzeń nieciągłą), ale też te trochę się różniące, ponieważ narażony jest na szereg zmian kodowania tego samego wejścia podczas treningu. Rysunek \ref{fig:vae_vs_stand}
