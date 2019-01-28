@@ -10,30 +10,23 @@ Jest to zbiór po kategoryzowanych odręcznie napisanych cyfr. Wszystkie obrazki
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=0.4\textwidth]{images/mnist}
+    \includegraphics[width=0.4\textwidth]{images/mnist_v2}
     \caption{Samples from MNIST dataset}
     \label{fig:mnist}
 \end{figure}
 
 \section{VAE}
 
-Na rysunku \ref{fig:vae} znajduje się efekt wyuczenia modelu VAE z warstwą ukrytą rozmiaru 20. Po lewej widać rekonstrukcje, a po prawej efekty zdekodowania wektora wygenerowanego ze standardowego rozkładu normalnego.
+Na rysunku \ref{fig:mnist_recon} znajduje się efekt wyuczenia modelu VAE przy różnych rozmiarach warstw ukrytych 2, 5, 7, 20, 50. W pierwszej kolumnie jest oryginalny obrazek natomiast w kolejnych jego wersja zrekonstruowana przy użyciu coraz to większych modeli.
 
 \begin{figure}[h!]
-  \centering
-  \begin{subfigure}[b]{0.57\linewidth}
-    \includegraphics[width=\linewidth]{images/mnist_recon}
-    \caption{W nieparzystych kolumnach znajdują się oryginalne obrazki, natomiast po prawej ich rekonstrukcje}
-  \end{subfigure}
-  \begin{subfigure}[b]{0.30\linewidth}
-    \includegraphics[width=\linewidth]{images/mnist_gen}
-    \caption{Przykłady wygenerowanych obrazków}
-  \end{subfigure}
-  \caption{Przedstawienie efektów modelu VAE}
-  \label{fig:vae}
+    \centering
+    \includegraphics[width=0.45\textwidth]{images/mnist_recon_v2}
+    \caption{}
+    \label{fig:mnist_recon}
 \end{figure}
 
-Dodatkowo warto byłoby zobaczyć jak konkretne cyfry rozrzucane są w przestrzeni. 20 wymiarów jest dosyć trudne do zwizualizowania, więc wyuczyłem model dla reprezentacji ukrytej rozmiaru 2. Na rysunku \ref{fig:mnist_2d} znajdują sie wyniki. Wartym odnotowania jest fakt, że niektóre klasy są bardzo dobrze separowalne. Widać tu właśnie opisane wcześniej zalety modelu VAE. Te ciekawą własność wyniku reprezentacji będę chciał wykorzystać w późniejszej analizie.
+Dodatkowo warto byłoby zobaczyć jak konkretne cyfry rozrzucane są w przestrzeni. Do tego celu wyuczyłem model dla reprezentacji ukrytej rozmiaru 2. Zdaje sobie sprawę, że przy tym rozmiarze rekonstrukcje nie są najlepszej jakości, ale wyżej wymiarowe przestrzenie ciężej zobrazować. Na rysunku \ref{fig:mnist_2d} znajdują się wyniki. Wartym odnotowania jest fakt, że niektóre klasy są bardzo dobrze separowalne. Widać tu właśnie opisane wcześniej zalety modelu VAE. Te ciekawą własność wyniku reprezentacji będę chciał wykorzystać w późniejszej analizie.
 
 \begin{figure}[h!]
     \centering
