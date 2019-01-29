@@ -1,7 +1,7 @@
 % Opcje klasy 'iithesis' opisane sa w komentarzach w pliku klasy. Za ich pomoca
 % ustawia sie przede wszystkim jezyk i rodzaj (lic/inz/mgr) pracy, oraz czy na
 % drugiej stronie pracy ma byc skladany wzor oswiadczenia o autorskim wykonaniu.
-\documentclass[polish,inz,shortabstract, declaration]{iithesis}
+\documentclass[polish,inz,shortabstract,declaration]{iithesis}
 
 \usepackage[utf8]{inputenc}
 \usepackage{graphicx,listings,amsmath,amsthm,amsfonts}
@@ -20,7 +20,7 @@
 \newcommandx{\thiswillnotshow}[2][1=]{\todo[disable,#1]{#2}} 
 
 \polishtitle    {Zastosowanie auto-enkoderów wariacyjnych do rozpoznawania zmian na obrazach medycznych}
-\englishtitle   {English title}
+% \englishtitle   {English title}
 
 \author         {Tomasz Nanowski}
 \advisor        {dr Jan Chorowski}
@@ -35,7 +35,6 @@
 \listoftodos[Notes]
 
 \input{chapters/introduction}
-\input{chapters/neuralnets}
 \input{chapters/mnist}
 \input{chapters/medical}
 \input{chapters/experiments}
