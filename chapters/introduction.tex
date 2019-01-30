@@ -19,7 +19,14 @@ Z grubsza odwrotnie jest w sytuacji bez nadzoru. Tam dla danych wejściowych nie
 
 \section{Autoenkoder}
 
-Jest to jeden z rodzai sieci neuronowych, służący do znajdowania wydajnej reprezentacji danych, co jak wspomniałem wcześniej jest przykładem nauki bez nadzoru. Myślę, że mogę go określić mianem nieliniowej alternatywy dla klasycznej statystycznej metody analizy głównych składowych (PCA, ang. principal component analysis). W autoenkoderach można wyróżnić dwie połączone ze sobą części zwane enkoderem i dekoderem. Zadaniem enkodera jest wyprodukowanie właśnie tej reprezentacji, podczas gdy dekoder służy do odtworzenia z niej oryginalnej postaci. Zależy nam na tym, żeby wyjście było w jakimś sensie jak najbardziej podobne do wejścia przy zachowaniu odpowiednio małej wymiarowości kodowania. Jest to pewnego rodzaju balansowanie pomiędzy ilością informacji, na których przepływ się zgadzamy, a ich jakością. W szczególności można pomyśleć o takiej patologicznej sytuacji jak ustalenie rozmiaru reprezentacji równej rozmiarowi danych, co prawdopodobnie będzie skutkować idealnymi rekonstrukcjami, ale przy okazji zerową wiedzą płynącą z takiego modelu. Analogicznie można rozważyć przypadek kiedy obszar kodowania jest za mały. Model w takiej sytuacji skupi się jedynie na przekazaniu wyłącznie trywialnych cech, żeby mimo wszystko jakkolwiek odtworzyć dane. Poglądowy schemat budowy znajduje się na rysunku \ref{fig:autoenc}.
+Jest to jeden z rodzai sieci neuronowych, służący do znajdowania wydajnej reprezentacji danych, co jak wspomniałem wcześniej jest przykładem nauki bez nadzoru. Myślę, że mogę go określić mianem nieliniowej alternatywy dla klasycznej statystycznej metody analizy głównych składowych (PCA, ang. principal component analysis). W autoenkoderach można wyróżnić dwie połączone ze sobą części zwane enkoderem i dekoderem. Zadaniem enkodera jest wyprodukowanie właśnie tej reprezentacji, podczas gdy dekoder służy do odtworzenia z niej oryginalnej postaci. Zależy nam na tym, żeby wyjście było w jakimś sensie jak najbardziej podobne do wejścia przy zachowaniu odpowiednio małej wymiarowości kodowania. Jest to pewnego rodzaju balansowanie pomiędzy ilością informacji, na których przepływ się zgadzamy, a ich jakością. W szczególności można pomyśleć o takiej patologicznej sytuacji jak ustalenie rozmiaru reprezentacji równej rozmiarowi danych wejściowych, co prawdopodobnie będzie skutkować idealnymi rekonstrukcjami, ale przy okazji zerową wiedzą płynącą z takiego modelu. Analogicznie można rozważyć przypadek kiedy obszar kodowania jest za mały. Model w takiej sytuacji skupi się jedynie na przekazaniu wyłącznie trywialnych cech, żeby mimo wszystko jakkolwiek odtworzyć dane. Poglądowy schemat budowy znajduje się na rysunku \ref{fig:autoenc}.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=1\textwidth]{images/autoenc}
+    \caption{Architektura autoenkodera}
+    \label{fig:autoenc}
+\end{figure}
 
 W przypadku obrazów na funkcję straty często wybierany jest błąd średniokwadratowy (MSE, ang. Mean Squared Error).
 
@@ -32,18 +39,11 @@ gdzie:
     \hat{Y}_{i}     &  zrekonstruowane dane
 \end{conditions}
 
-Może wymagającym sprostowania jest fakt, iż mimo mówimy jakie oczekujemy wyjście z modelu, w sensie rekonstrukcji, to dalej jest to problem typu nauki bez nadzoru, ponieważ rzeczywistą szukaną przez nas wiedzą jest umiejętność kodowania danych i osobno ich dekodowania. Chciałbym w tym miejscu zastanowić się co nam to zyskujemy na tym. Już w tym momencie zaletą jest oczywiście redukcja wymiarowości, która ułatwia późniejszą analizę danych oraz pozwala na ich kompresję i ewentualne odszumianie. Dodatkowo wydaje się, że mając wytrenowany dekoder, na konkretnej rodzinie danych, moglibyśmy zaaplikować do niego dowolne kodowanie i w ten sposób może otrzymać jakiś wynik pochodzący z oryginalnej dziedziny, czyli wykorzystać go jako generator nowych próbek. Niestety ten pomysł ma taki problem, że podczas nauki nie ma żadnej kontroli nad tym jak dane zostaną rozrzucone w przestrzeni, która notabene jest nieskończona (z ograniczeniem do pojemności liczb zmiennoprzecinkowych). W takim razie nie wiemy jaka podprzestrzeń odpowiada tym kodowaniom, które są sensownie dekodowane, co jest potrzebne przy generowaniu, a dodatkowo jeśli bałaby nieciągła, to niemożliwe byłoby interpolowanie pomiędzy próbkami. Znaczącym problemem jest natomiast to, że kodowanie jako wektor liczb jest bardzo precyzyjną informacją, co może doprowadzić do przeuczenia modelu i błędnego działania na danych pochodzących z poza zbioru treningowego.
+Wymagającym sprostowania może być fakt, iż mimo mówimy jakie oczekujemy wyjście z modelu, w sensie rekonstrukcji, to dalej jest to problem typu nauki bez nadzoru, ponieważ rzeczywistą szukaną przez nas wiedzą jest umiejętność kodowania danych i osobno ich dekodowania. Chciałbym w tym miejscu zastanowić się co dzięki temu zyskujemy. Już teraz zaletą jest oczywiście redukcja wymiarowości, która ułatwia późniejszą analizę danych oraz pozwala na ich kompresję i ewentualne odszumianie. Dodatkowo wydaje się, że mając wytrenowany dekoder, na konkretnej rodzinie danych, moglibyśmy zaaplikować do niego dowolne kodowanie i w ten sposób może otrzymać wynik pochodzący z oryginalnej dziedziny, czyli wykorzystać go jako generator nowych próbek. Niestety ten pomysł ma taki problem, że podczas nauki nie ma żadnej kontroli nad tym jak dane zostaną rozrzucone w przestrzeni, która notabene jest nieskończona (z ograniczeniem do pojemności liczb zmiennoprzecinkowych). W takim razie nie wiemy jaka podprzestrzeń odpowiada tym kodowaniom, które są sensownie dekodowane, co jest potrzebne przy generowaniu, a dodatkowo jeśli bałaby nieciągła, to niemożliwe byłoby interpolowanie pomiędzy próbkami. Znaczącym problemem jest natomiast to, że kodowanie jako wektor liczb jest bardzo precyzyjną informacją, co może doprowadzić do przeuczenia modelu i błędnego działania na danych pochodzących z poza zbioru treningowego.
 
-\begin{figure}[h!]
-    \centering
-    \includegraphics[width=1\textwidth]{images/autoenc}
-    \caption{Architektura autoenkodera}
-    \label{fig:autoenc}
-\end{figure}
+\section{Autoenkoder wariacyjny} \label{sec:vae}
 
-\section{Autoenkoder wariacyjny}
-
-Autoenkoder wariacyjny rozszerza założenia podstawowej architektury o wprowadzenie modelowania rozkładu prawdopodobieństwa dla reprezentacji ukrytej. Teraz enkoder nie produkuje pojedynczego wektora, ale dwa wektory interpretowane odpowiednio jako średnie $\mu$ oraz wariancje $\sigma$ dla rozkładu Gaussa. Dopiero na podstawie tych parametrów formowane jest kodowanie, gdzie $i$-ta wartość losowana jest z $\mathcal{N}(\mu_{i},\,\sigma_{i}^{2})$, które aplikowane zostaje do dekodera i rekonstruowana jest na podstawie niego pierwotna próbka. Takie podejście znaczy, że nawet dla tego samego wejścia i podczas gdy średnie oraz odchylenia pozostaną niezmienne, to i tak reprezentacja będzie się różnić właśnie ze względu na występującą losowość. Zmodyfikowany schemat został przedstawiony na rysunku \ref{fig:vae_model}.
+Autoenkoder wariacyjny rozszerza założenia podstawowej architektury o wprowadzenie modelowania rozkładu prawdopodobieństwa dla reprezentacji ukrytej. W odróżnieniu od podstawowej wersji enkoder nie produkuje pojedynczego wektora, ale dwa wektory interpretowane odpowiednio jako średnie $\mu$ oraz wariancje $\sigma$ dla rozkładu Gaussa. Dopiero na podstawie tych parametrów formowane jest kodowanie, gdzie $i$-ta wartość losowana jest z $\mathcal{N}(\mu_{i},\,\sigma_{i}^{2})$, które aplikowane zostaje do dekodera i rekonstruowana jest na podstawie niego pierwotna próbka. Takie podejście znaczy, że nawet dla tego samego wejścia i podczas gdy średnie oraz odchylenia pozostaną niezmienne, to i tak reprezentacja będzie się różnić właśnie ze względu na występującą losowość. Zmodyfikowany schemat został przedstawiony na rysunku \ref{fig:vae_model}.
 
 \begin{figure}[h!]
     \centering
@@ -52,7 +52,7 @@ Autoenkoder wariacyjny rozszerza założenia podstawowej architektury o wprowadz
     \label{fig:vae_model}
 \end{figure}
 
-Intuicyjnie wektor średnich oznacza, gdzie zakodowana zmienna powinna być wycentrowana, natomiast odchylenie kontroluje obszar, wokół którego kodowanie może się różnić. Sytuację tę zaprezentowałem na wykresie \ref{fig:vae_vs_stand}, przy czym porównałem to z podstawową wersją. W jej przypadku informacja wychodząca z enkodera jest bardzo precyzyjna, natomiast w obecnie rozważanym modelu, dzięki dodaniu szumu, zostaje ona rozmyta. Taki zabieg ma za zadanie ograniczyć zjawisko przeuczenia oraz wprowadzić pewną lokalną ciągłość w przestrzeni. Jest to wynikiem tego, że gdy kodowanie losowane jest z wnętrza kuli, notabene o nieskończonym promieniu, ale ustalonej gęstości, to dekoder zmuszony jest nauczyć się, że nie jedynie pojedynczy punkt odnosi się do danej próbki, ale i również jego całe lokalne sąsiedztwo. To pozwala dekodować nie tylko specyficzne reprezentacje (pozostawiając przestrzeń nieciągłą), ale też te trochę różniące się, ponieważ model narażony jest na szereg zmian kodowania tego samego wejścia podczas treningu.
+Intuicyjnie wektor średnich oznacza miejsce, gdzie zakodowana zmienna powinna być wycentrowana, natomiast odchylenie kontroluje obszar, wokół którego kodowanie może się różnić. Sytuację tę zaprezentowałem na wykresie \ref{fig:vae_vs_stand}, przy czym porównałem z podstawową wersją. W jej przypadku informacja wychodząca z enkodera jest bardzo precyzyjna, natomiast w obecnie rozważanym modelu, dzięki dodaniu szumu, zostaje ona rozmyta. Taki zabieg ma za zadanie ograniczyć zjawisko przeuczenia oraz wprowadzić pewną lokalną ciągłość w przestrzeni. Jest to wynikiem tego, że gdy kodowanie losowane jest z wnętrza kuli, notabene o nieskończonym promieniu, ale ustalonej gęstości, to dekoder zmuszony jest nauczyć się, że nie jedynie pojedynczy punkt odnosi się do danej próbki, ale i również jego całe lokalne sąsiedztwo. To pozwala dekodować nie tylko specyficzne reprezentacje (pozostawiając przestrzeń nieciągłą), ale też te trochę różniące się, ponieważ model narażony jest na szereg zmian kodowania tego samego wejścia podczas treningu.
 
 \begin{figure}[h!]
     \centering
@@ -61,34 +61,33 @@ Intuicyjnie wektor średnich oznacza, gdzie zakodowana zmienna powinna być wyce
     \label{fig:vae_vs_stand}
 \end{figure}
 
-Model jest teraz wystawiony na pewien stopień lokalnej zmienności przez wprowadzenie szumu do kodowania pojedynczej próbki, co skutkuje ciągłą przestrzenią w reprezentacji ukrytej dla lokalnego sąsiedztwa. Jednak na razie nie ma ograniczeń co do wartości jakie mogą być przyjmowane przez wektory $\mu$ i $\sigma$, a w rezultacie enkoder może nauczyć się generować bardzo różne $\mu$ dla różnych klas i grupować je minimalizując $\sigma$, upewniając się, że samo kodowanie nie różni się zbytnio dla tej samej próbki. W szczególności $\sigma$ może wynosić 0, przez co wrócimy do podstawowego modelu. To oczywiście pozwala dekoderowi na skuteczną rekonstrukcję, ale jedynie danych treningowych. Przykład przedstawiony jest na rysunku \ref{fig:vae_nolimits}. To co byśmy idealnie chcieli to kodowanie, gdzie grupy są blisko siebie, ale mimo wszystko są dobrze separowalne. Pozwoliłoby nam to na gładką interpolacje między próbkami i konstruowanie nowych danych.
+Model jest teraz wystawiony na pewien stopień lokalnej zmienności przez wprowadzenie szumu do kodowania pojedynczej próbki, co skutkuje ciągłą przestrzenią w reprezentacji ukrytej dla lokalnego sąsiedztwa. Jednak na razie nie ma ograniczeń co do wartości jakie mogą być przyjmowane przez wektory $\mu$ i $\sigma$, a w rezultacie enkoder może nauczyć się generować bardzo różne $\mu$ dla różnych klas i grupować je minimalizując $\sigma$, upewniając się przy tym, że samo kodowanie nie różni się zbytnio dla tej samej próbki. W szczególności prawdopodobnym jest wystąpienie tak patologicznej sytuacji, gdzie $\sigma$ zawsze wynosi 0, przez co nowy model nie będzie różnić się w działaniu od jego podstawowej wersji, włącznie z uwzględnieniem wad, które starał się wyeliminować. Omawiany przeze mnie przykład przedstawiony jest na rysunku \ref{fig:vae_nolimits}. Oczekiwaną sytuacją byłoby rozłożenie danych blisko siebie, ale z zachowaniem ich separowalności. Pozwoliłoby to na gładką interpolacje pomiędzy próbkami i generowanie nowych danych.
 
 \begin{figure}[h!]
     \centering
     \includegraphics[width=0.7\textwidth]{images/vae_nolimits}
-    \caption{Architecture of Variational Autoencoder}
+    \caption{}
     \label{fig:vae_nolimits}
 \end{figure}
 
-Żeby to osiągnąć wzbogacimy funkcję straty o koszt the Kullback–Leibler divergence. KL divergence mierzy po prostu różnicę pomiędzy dwoma rozkładami prawdopodobieństwa. Minimalizowanie go oznacza optymalizowania parametrów rozkładu ($\mu$ i $\sigma$), tak żeby jak najbardzieć przypominały celowy rozkład. W przypadku VAE będzie to standardowy rozkład normalny ($\mu = 0$,  $\sigma = 1$).
+W celu osiągnięcia zamierzonych rezultatów, należy wzbogacić funkcję straty o koszt dywergencji Kullbacka-Leiblera, która mierzy różnicę pomiędzy dwoma rozkładami prawdopodobieństwa. Minimalizowanie go oznacza optymalizowanie parametrów rozkładu ($\mu$ i $\sigma$), tak żeby jak najbardziej przypominał docelowy rozkład, który w przypadku autoenkodera wariacyjnego będzie standardowym rozkładem normalnym ($\mu = 0$,  $\sigma = 1$).
+Przy takim wyborze dane powinny zostać rozrzucone dookoła $\vec{0}$ i nie pozostawiać pustych miejsc w przestrzeni ukrytej.
 
-$$
+\begin{equation}
 \mathrm { KLD } = \sum _ { i = 1 } ^ { n } \sigma _ { i } ^ { 2 } + \mu _ { i } ^ { 2 } - \log \left( \sigma _ { i } \right) - 1
-$$
+\end{equation}
 
-\subsection{Magia, która za tym stoi}
 
-To co do tej pory napisałem to były w większości intuicje i nasze zachcianki. Chciałbym teraz przedstawić jak to wygląda od strony matematycznej.
+\subsection{Opis matematyczny}
+
+To co do tej pory napisałem odnośnie autoenkodera wariacyjnego raczej trzeba uznać za zbiór intuicji i oczekiwań. W tym rozdziale chciałbym pokazać jego funkcjonowanie od strony matematycznej.
 
 \add[inline]{Dokończyć matmę}
 
-%\section{Convolutional VAE}
-%
-%Jest to rozszerzenie poprzedniego modelu, w którym dodatkowo stosujemy warstwy splotowe. Szczególnie w przypadku obrazów pozwala to na zwiększenie rozmiaru danych wejściowych przez zmniejszenie ilości parametrów w stosunku do warstw fully-connected oraz wykryciu na wstępie jakiś prostych cech, przez co w reprezentacji mogą znajdowac się bardziej abstrakcyjne rzeczy. 
 
 \section{Deep feature consistent variational auto-encoder}
 
-W autoenkoderze wariacyjnym jednym ze składników kosztu jest błąd rekonstrukcji. Standardowo funkcja ta oparta jest na porównywaniu wartości odpowiadającym sobie pikselom z oryginalnego obrazu i tego zrekonstruowanego. Często przyczynia się to do uśredniania wartości pikseli przez co wyjściowy obraz nie jest wyraźny. Przyczynie sie do tego między innymi fakt, że taki liczenie błędu jest bardzo czułe na chociażby przesunięcie. Oryginalny obraz i ten lekko przesunięty mimo, iż nie różnią się prawie wogóle perceptualnie dla człowieka, to ich koszt MSE jest bardzo duży. Uśrednianie wartości jest sposobem na optymalizowanie tego problemu. Wynika z tego, że raczej chcielibyśmy patrzeć na to co znajduje się na obrazkach, niż porównywać poszczególne piksele.
+W autoenkoderze wariacyjnym jednym ze składników kosztu jest błąd rekonstrukcji. Z definicji funkcja ta oparta jest na porównywaniu wartości odpowiadającym sobie pikselom z oryginalnego obrazu i tego zrekonstruowanego. Często przyczynia się to do uśredniania wartości pikseli przez co wyjściowy obraz nie jest wyraźny. Przyczynie sie do tego między innymi fakt, że taki liczenie błędu jest bardzo czułe na chociażby przesunięcie. Oryginalny obraz i ten lekko przesunięty mimo, iż nie różnią się prawie wogóle perceptualnie dla człowieka, to ich koszt MSE jest bardzo duży. Uśrednianie wartości jest sposobem na optymalizowanie tego problemu. Wynika z tego, że raczej chcielibyśmy patrzeć na to co znajduje się na obrazkach, niż porównywać poszczególne piksele.
 
 I w tym właśnie miejscu pojawia się Deep feature consistent. Opiera się ona na wykorzystaniu wcześniej już wyuczonej sieci splotowej. W takich sieciach coraz głębsze filtry odpowiadają za rozpoznawanie coraz to bardziej abstrakcyjnych cech. Będziemy teraz myśleć, że dwa obrazy są podobne, jeśli maja podobne wartości aktywacji w warstwach ukrytych tej sieci. Dzięki takiemu patrzeniu na różnice dwa obrazy powinny być podobne nawet jeśli zostaną poddane takim operacjom jak m.in przesunięcie, rotacja, co stanowi duży problem dla kosztów typu pixel-to-pixel. Bład ten jest okreslany mianem perceptual loss.
 
@@ -98,3 +97,11 @@ I w tym właśnie miejscu pojawia się Deep feature consistent. Opiera się ona 
     \caption{Architecture of Variational Autoencoder}
     \label{fig:dfc_vae}
 \end{figure}
+
+\section{Ocena jakości modelu}
+
+\subsection{Krzywa ROC i AUC}
+
+Krzywa ROC (Receiver Operating Characteristic) jest narzędziem do oceny poprawności klasyfikatora binarnego. Bazuje ona na wyliczaniu charakterystyki jakościowej modelu predykcji w wielu różnych punktach odcięcia. Z praktycznego punktu widzenia działa to na takiej zasadzie, że mamy dane pochodzące z dwóch klas. Model odpowiada z jaką pewnością dane należą do klasy 1. Następnie badamy różne progi i klasyfikujemy obiekty (jeśli przewidziana wartość jest powyżej progu to 1 wpp 0). Dla uzyskanych klasyfikacji liczymy TPR oraz FPR i nanosimy te wartości na wykres. Warto zauważyć, że dla losowego modelu jego wykres to prosta przechodząca przez (0, 0) i (1, 1). Dzieje się tak, ponieważ w przy każdym progu połowa danych będzie nad i połowa pod. Idealny model znajduje się w punkcie (0, 1).
+
+Przydatne jest również obliczenie pola powierzchni pod krzywą AUC (Area Under Curve). Interpretuje się ją jako prawdopodobieństwo, że badany model predykcyjny oceni wyżej losowy element klasy pozytywnej od losowego elementu klasy negatywnej.

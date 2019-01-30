@@ -1,32 +1,37 @@
-\chapter{Experiments on MNIST}
+\chapter{Eksperymenty na danych syntetycznych (MNIST)}
 
-Na początek chciałbym zacząć od odtworzenia docelowego problemu na prostszych danych jakim jest zbiór MNIST. Pozwoli to w ogólności stwierdzić sensowność skorzystania z wybranego modelu. Zakładam, że jeśli eksperyment nie powiódłby się na łatwiejszych danych, to raczej nie powiedzie się również na tych bardziej skomplikowanych. To miejsce traktuje jako poligon testowy. Pozwoli mi to też nabrać pewnego rodzaju doświadczenia z wybranym modelem.
-
-Sytuację, którą będę chciał poddać testowi jest całkowite niezbalansowanie danych, a wręcz brak danych drugiej kategorii i obserwacja jak zachowuje sie w takim przypadku model. Będę chciał to osiągnąć poprzez uczenie modelu jedynie na danych pochodzących z dwóch klas [4, 7], a następnie obserwacja tego co się stanie z modelem przy zaaplikowania danych z klasy [5]. Ma to odtworzyć sytuację gdzie danych opisujących zmiany nowotworowe jest przytłaczająco mniej od tych zdrowych.
-
-\section{MNIST}
-
-Jest to zbiór po kategoryzowanych odręcznie napisanych cyfr. Wszystkie obrazki są czarno-białe, rozmiaru 28x28 i wycentrowane. Każdy piksel ma wartość dualną: 0 albo 1. Zbiór składa się z 60000 danych treningowych i 10000 testowych. Przykładowe obrazki \ref{fig:mnist}.
+Do przetestowania modeli posłuży mi zbiór MNIST. Jest to zestaw odręcznie napisanych cyfr, które następnie zostały znormalizowane względem rozmiaru i wycentrowane. Każdy obrazek ma rozmiar 28x28 pikseli, mających wartości całkowite z przedziału [0, 255]. Na zbiór składa się z 60 tys. danych treningowych i 10 tys. testowych. Przykładowe obrazki znajdują się na rysunku \ref{fig:mnist}.
 
 \begin{figure}[h!]
     \centering
     \includegraphics[width=0.4\textwidth]{images/mnist_v2}
-    \caption{Samples from MNIST dataset}
+    \caption{Przykładowe dane ze zbioru MNIST}
     \label{fig:mnist}
 \end{figure}
 
-\section{VAE}
+\section{Autoenkoder wariacyjny}
 
-Na rysunku \ref{fig:mnist_recon} znajduje się efekt wyuczenia modelu VAE przy różnych rozmiarach warstw ukrytych 2, 5, 7, 20, 50. W pierwszej kolumnie jest oryginalny obrazek natomiast w kolejnych jego wersja zrekonstruowana przy użyciu coraz to większych modeli.
+Chciałbym zacząć od sprawdzenia podstawowych własności autoenkodera wariacyjnego, przedstawionych w rozdziale \ref{sec:vae} W tym celu wytrenowałem modele o różnych rozmiarach reprezentacji ukrytej: 2, 5, 7, 20, 50. Następnie sprawdziłem jak radzą sobie z rekonstrukcją danych ze zbioru testowego oraz generowaniem nowych próbek. Wyniki prezentują się na rysunku \ref{fig:mnist_recon}. 
 
 \begin{figure}[h!]
-    \centering
-    \includegraphics[width=0.45\textwidth]{images/mnist_recon_v2}
+  \centering
+  \begin{subfigure}[b]{0.45\linewidth}
+    \missingfigure[]{ Rekonstrukcje z podziałem na rozmiary reprezentacji }
     \caption{}
-    \label{fig:mnist_recon}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.45\linewidth}
+    \missingfigure[]{ Box plot z rozkładem błędów średniokwadratowych }
+    \caption{}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.45\linewidth}
+    \missingfigure[]{ Generowanie nowych próbek }
+    \caption{}
+  \end{subfigure}
+  \caption{}
+  \label{fig:mnist_recon}
 \end{figure}
 
-Dodatkowo warto byłoby zobaczyć jak konkretne cyfry rozrzucane są w przestrzeni. Do tego celu wyuczyłem model dla reprezentacji ukrytej rozmiaru 2. Zdaje sobie sprawę, że przy tym rozmiarze rekonstrukcje nie są najlepszej jakości, ale wyżej wymiarowe przestrzenie ciężej zobrazować. Na rysunku \ref{fig:mnist_2d} znajdują się wyniki. Wartym odnotowania jest fakt, że niektóre klasy są bardzo dobrze separowalne. Widać tu właśnie opisane wcześniej zalety modelu VAE. Te ciekawą własność wyniku reprezentacji będę chciał wykorzystać w późniejszej analizie.
+Ze względu na łatwość wizualizacji, do sprawdzenia jak dane reprezentowane są w przestrzeni ukrytej wybrałem model bazujący na wymiarze rozmiaru 2. Zdaję sobie sprawę, że rekonstrukcje w tym przypadku nie są najlepszej jakości, ze względu na zbyt ograniczoną ilość informacji możliwych do przekazania, ale zależy mi też na przedstawieniu podstawowych założeń. W tym celu na wykresie dla losowych próbek zaznaczyłem odpowiadające im średnie oraz odchylenia. Otrzymany rezultat widać na obrazku \ref{fig:mnist_2d}, gdzie można zauważyć opisane wcześniej własności wybranego modelu takie jak skoncentrowanie reprezentacji wokół $\vec{0}$ czy ciągłość przestrzeni.
 
 \begin{figure}[h!]
     \centering
@@ -34,6 +39,12 @@ Dodatkowo warto byłoby zobaczyć jak konkretne cyfry rozrzucane są w przestrze
     \caption{}
     \label{fig:mnist_2d}
 \end{figure}
+
+\subsection{Symulacja docelowego problemu}
+
+Na początek chciałbym zacząć od odtworzenia docelowego problemu na prostszych danych jakim jest zbiór MNIST. Pozwoli to w ogólności stwierdzić sensowność skorzystania z wybranego modelu. Zakładam, że jeśli eksperyment nie powiódłby się na łatwiejszych danych, to raczej nie powiedzie się również na tych bardziej skomplikowanych. To miejsce traktuje jako poligon testowy. Pozwoli mi to też nabrać pewnego rodzaju doświadczenia z wybranym modelem.
+
+Sytuację, którą będę chciał poddać testowi jest całkowite niezbalansowanie danych, a wręcz brak danych drugiej kategorii i obserwacja jak zachowuje sie w takim przypadku model. Będę chciał to osiągnąć poprzez uczenie modelu jedynie na danych pochodzących z dwóch klas [4, 7], a następnie obserwacja tego co się stanie z modelem przy zaaplikowania danych z klasy [5]. Ma to odtworzyć sytuację gdzie danych opisujących zmiany nowotworowe jest przytłaczająco mniej od tych zdrowych.
 
 W oryginalnym problemie mamy bardzo duży dysonans pomiędzy ilością przykładów dla każdej z klas. Według statystyk dane z komórkami rakowymi stanowią ~1\% wszystkich. Ciężko jest wiec nawet mówić o jakimś sensownym podejściu supervised. Do zasymulowania tego problemu dla MNIST będę uczył model jedynie na dwóch klasach [4, 7], a następnie testował zachowanie reprezentacji ukrytej dla przekładów z klasy 5.
 
@@ -54,12 +65,6 @@ Do określenia jak rzeczywiście dobra jest ta separacja można wykorzystać krz
     \caption{}
     \label{fig:mnist_roc}
 \end{figure}
-
-\subsection{Krzywa ROC i AUC}
-
-Krzywa ROC (Receiver Operating Characteristic) jest narzędziem do oceny poprawności klasyfikatora binarnego. Bazuje ona na wyliczaniu charakterystyki jakościowej modelu predykcji w wielu różnych punktach odcięcia. Z praktycznego punktu widzenia działa to na takiej zasadzie, że mamy dane pochodzące z dwóch klas. Model odpowiada z jaką pewnością dane należą do klasy 1. Następnie badamy różne progi i klasyfikujemy obiekty (jeśli przewidziana wartość jest powyżej progu to 1 wpp 0). Dla uzyskanych klasyfikacji liczymy TPR oraz FPR i nanosimy te wartości na wykres. Warto zauważyć, że dla losowego modelu jego wykres to prosta przechodząca przez (0, 0) i (1, 1). Dzieje się tak, ponieważ w przy każdym progu połowa danych będzie nad i połowa pod. Idealny model znajduje się w punkcie (0, 1).
-
-Przydatne jest również obliczenie pola powierzchni pod krzywą AUC (Area Under Curve). Interpretuje się ją jako prawdopodobieństwo, że badany model predykcyjny oceni wyżej losowy element klasy pozytywnej od losowego elementu klasy negatywnej.
 
 \section{Deep feature consistent variational auto-encoder}
 
