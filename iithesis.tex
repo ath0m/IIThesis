@@ -11,6 +11,7 @@
 \usepackage[usenames,dvipsnames]{xcolor}
 \usepackage[colorinlistoftodos,prependcaption,textsize=tiny,shadow]{todonotes}
 \usepackage{booktabs}
+\usepackage{array}
 
 \newcommandx{\unsure}[2][1=]{\todo[linecolor=red,backgroundcolor=red!25,bordercolor=red,#1]{#2}}
 \newcommandx{\change}[2][1=]{\todo[linecolor=blue,backgroundcolor=blue!25,bordercolor=blue,#1]{#2}}
@@ -18,6 +19,9 @@
 \newcommandx{\improvement}[2][1=]{\todo[linecolor=purple,backgroundcolor=purple!25,bordercolor=purple,#1]{#2}}
 \newcommandx{\add}[2][1=]{\todo[linecolor=Goldenrod,backgroundcolor=Goldenrod!25,bordercolor=Goldenrod,#1]{#2}}
 \newcommandx{\thiswillnotshow}[2][1=]{\todo[disable,#1]{#2}} 
+
+\newenvironment{conditions} {\par\vspace{\abovedisplayskip}\noindent\begin{tabular}{>{$}l<{$} @{${}-{}$} l}} {\end{tabular}\par\vspace{\belowdisplayskip}}
+
 
 \polishtitle    {Zastosowanie auto-enkoderów wariacyjnych do rozpoznawania zmian na obrazach medycznych}
 % \englishtitle   {English title}

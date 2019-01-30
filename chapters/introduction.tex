@@ -19,23 +19,25 @@ Z grubsza odwrotnie jest w sytuacji bez nadzoru. Tam dla danych wejściowych nie
 
 \section{Autoenkoder}
 
-Jest to jeden z rodzai sieci neuronowych, służący do znajdowania wydajnej reprezentacji danych, co jak wspomniałem wcześniej jest przykładem nauki bez nadzoru. W autoenkoderach można wyróżnić dwie połączone ze sobą części zwane enkoderem i dekoderem. Zadaniem enkodera jest wyprodukowanie właśnie tej reprezentacji, podczas gdy dekoder służy do odtworzenia z niej oryginalnej postaci. Zależy nam na tym, żeby wyjście było w jakimś sensie jak najbardziej podobne do wejścia przy zachowaniu odpowiednio małej wymiarowości kodowania. Jest to pewnego rodzaju balansowanie pomiędzy ilością informacji, na których przepływ się zgadzamy, a ich jakością. W szczególności można pomyśleć o takiej patologicznej sytuacji jak ustalenie rozmiaru reprezentacji równej rozmiarowi danych, co prawdopodobnie będzie skutkować idealnymi rekonstrukcjami, ale przy okazji zerową wiedzą płynącą z takiego modelu. Analogicznie można rozważyć przypadek kiedy obszar kodowania jest za mały. Model w takiej sytuacji skupi się jedynie na przekazaniu wyłącznie trywialnych cech, żeby mimo wszystko jakkolwiek odtworzyć dane.
+Jest to jeden z rodzai sieci neuronowych, służący do znajdowania wydajnej reprezentacji danych, co jak wspomniałem wcześniej jest przykładem nauki bez nadzoru. Myślę, że mogę go określić mianem nieliniowej alternatywy dla klasycznej statystycznej metody analizy głównych składowych (PCA, ang. principal component analysis). W autoenkoderach można wyróżnić dwie połączone ze sobą części zwane enkoderem i dekoderem. Zadaniem enkodera jest wyprodukowanie właśnie tej reprezentacji, podczas gdy dekoder służy do odtworzenia z niej oryginalnej postaci. Zależy nam na tym, żeby wyjście było w jakimś sensie jak najbardziej podobne do wejścia przy zachowaniu odpowiednio małej wymiarowości kodowania. Jest to pewnego rodzaju balansowanie pomiędzy ilością informacji, na których przepływ się zgadzamy, a ich jakością. W szczególności można pomyśleć o takiej patologicznej sytuacji jak ustalenie rozmiaru reprezentacji równej rozmiarowi danych, co prawdopodobnie będzie skutkować idealnymi rekonstrukcjami, ale przy okazji zerową wiedzą płynącą z takiego modelu. Analogicznie można rozważyć przypadek kiedy obszar kodowania jest za mały. Model w takiej sytuacji skupi się jedynie na przekazaniu wyłącznie trywialnych cech, żeby mimo wszystko jakkolwiek odtworzyć dane. Poglądowy schemat budowy znajduje się na rysunku \ref{fig:autoenc}.
 
+W przypadku obrazów na funkcję straty często wybierany jest błąd średniokwadratowy (MSE, ang. Mean Squared Error).
 
-W przypadku obrazów jako funkcja straty często stosowany jest błąd średnio kwadratowy (MSE). $Y _ { i }$ oznacza oryginalne dane, natomiast $\hat { Y } _ { i }$ zrekonstruowane.
-
-$$
+\begin{equation}
 \mathrm { MSE } = \frac { 1 } { n } \sum _ { i = 1 } ^ { n } \left( Y _ { i } - \hat { Y } _ { i } \right) ^ { 2 }
-$$
+\end{equation}
+gdzie:
+\begin{conditions}
+    Y_i             &  oryginalne dane \\
+    \hat{Y}_{i}     &  zrekonstruowane dane
+\end{conditions}
 
-Przykładowy schemat znajduje się na wykresie \ref{fig:autoenc}. Zdjęcie kota zostaje włożone do encodera, a on znajduje jego liczbową reprezentację (czyli wektor o jakiejś ustalonej długości). Następnie tą reprezentacją karmiony jest dekoder, który ma za zadanie jak najlepiej odtworzyć oryginał. Chcemy mieć nadzieję, że taki model nauczy się dobrze układać wysoko wymiarowe dane w mniejszej przestrzeni, gdzie podobne do siebie obiekty będą blisko siebie. 
-
-Często autoenkodery po wytrenowaniu nadają się do generowania całkiem nowych, nigdy jeszcze nie widzianych danych, ale podobnych do tych z zestawu uczącego. Można albo całkowicie wylosować wektor reprezentacji, albo delikatnie zmodyfikować dla już istniejącego przykładu. Dzięki temu możemy uzyskać realistycznie wyglądający obiekt o np. innym kolorze, kształcie. 
+Może wymagającym sprostowania jest fakt, iż mimo mówimy jakie oczekujemy wyjście z modelu, w sensie rekonstrukcji, to dalej jest to problem typu nauki bez nadzoru, ponieważ rzeczywistą szukaną przez nas wiedzą jest umiejętność kodowania danych i osobno ich dekodowania. Chciałbym w tym miejscu zastanowić się co nam to zyskujemy na tym. Już w tym momencie zaletą jest oczywiście redukcja wymiarowości, która ułatwia późniejszą analizę danych oraz pozwala na ich kompresję i ewentualne odszumianie. Dodatkowo wydaje się, że mając wytrenowany dekoder, na konkretnej rodzinie danych, moglibyśmy zaaplikować do niego dowolne kodowanie i w ten sposób może otrzymać jakiś wynik pochodzący z oryginalnej dziedziny, czyli wykorzystać go jako generator nowych próbek. Niestety ten pomysł ma taki problem, że podczas nauki nie ma żadnej kontroli nad tym jak dane zostaną rozrzucone w przestrzeni, która notabene jest nieskończona (z ograniczeniem do pojemności liczb zmiennoprzecinkowych). W takim razie nie wiemy jaka podprzestrzeń odpowiada tym kodowaniom, które są sensownie dekodowane, co jest potrzebne przy generowaniu, a dodatkowo jeśli bałaby nieciągła, to niemożliwe byłoby interpolowanie pomiędzy próbkami. Znaczącym problemem jest natomiast to, że kodowanie jako wektor liczb jest bardzo precyzyjną informacją, co może doprowadzić do przeuczenia modelu i błędne działania na danych pochodzących z poza zbioru treningowego.
 
 \begin{figure}[h!]
     \centering
     \includegraphics[width=1\textwidth]{images/autoenc}
-    \caption{Architecture of autoencoder}
+    \caption{Architektura autoenkodera}
     \label{fig:autoenc}
 \end{figure}
 
