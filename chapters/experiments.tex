@@ -1,8 +1,6 @@
-\section{Results}
+\section{Wyniki}
 
 Przetestuje 4 kombinacje modeli, ze zmienioną funckją kosztu
-
-\add{dodać krótki opis modeli i może dla czego softmax}
 
 W tabeli \ref{table:results} zostały przedstawione wyniki dla czterech kombinacji modeli oraz parametrów. Wartości liczbowe opisują najlepsze AUC ROC podczas uczenia wraz z odpowiadającą epoką. Jak widać w tym zestawieniu najlepiej wypadły podstawowe modele VAE.
 
@@ -22,7 +20,7 @@ W tabeli \ref{table:results} zostały przedstawione wyniki dla czterech kombinac
 \end{table}
 \improvement{Dodać z-dim}
 
-\section{Analysis}
+\section{Analiza}
 
 Zajmę się analizą modelu w wersji VAE + Softmax. Na wykresie \ref{fig:soft_vae} przedstawione są koszty, ich rozkłady, przykłady rekonstrukcji oraz krzywa ROC. Ciekawie wyglądają te dwa zauważalne ogony na wykresie. Postaram sie lepiej przyjrzeć ich specyfice. 
 
@@ -49,54 +47,10 @@ Pierwszym pomysłem jest, żeby sprawdzić rozkład obrazków w zależności od 
     \label{fig:pixels_hist}
 \end{figure}
 
-Na rysunku \ref{fig:pixels_sum_examples} pokazane są przykłady obrazków z zadanymi poziomami sumy pikseli. 
-
-\begin{figure}[h!]
-    \centering
-    \includegraphics[width=1.0\textwidth]{images/pixels_sum_examples}
-    \caption{}
-    \label{fig:pixels_sum_examples}
-\end{figure}
-
-\subsection{Conclusion}
+\subsection{Wnioski}
 
 Niestety podejście z użyciem VAE nie zadziałało.
 
-\section{Back to basic models}
-
-\subsection{Logistic Regression}
-
-\begin{figure}[h!]
-    \centering
-    \missingfigure[]{Zaznaczona na obrazkach oryginalne mazki wraz z tymi zrekonstrowanymi}
-    % \includegraphics[width=1.0\textwidth]{images/logreg_mask}
-    \caption{}
-    \label{fig:logreg_mask}
-\end{figure}
-
-\begin{figure}[h!]
-    \centering
-    \missingfigure[]{Dice similarity coefficient}
-    % \includegraphics[width=1.0\textwidth]{images/logreg_dsc}
-    \caption{}
-    \label{fig:logreg_dsc}
-\end{figure}
-
-\subsection{CNN}
-
-% \begin{figure}[h!]
-%     \centering
-%     \includegraphics[width=1.0\textwidth]{images/simcnn_mask}
-%     \caption{}
-%     \label{fig:simcnn_mask}
-% \end{figure}
-
-% \begin{figure}[h!]
-%     \centering
-%     \includegraphics[width=1.0\textwidth]{images/simcnn_dsc}
-%     \caption{}
-%     \label{fig:simcnn_dsc}
-% \end{figure}
 
 
 

@@ -1,10 +1,8 @@
-\chapter{Experiments on MRI FLAIR images}
+\chapter{Eksperyment na danych właściwych (MRI FLAIR)}
 
-\section{Data description \& preprocessing}
+\section{Opis danych}
 
-\subsection{Overview}
-
-Dane pochodzą z Duke University. Są to zdjęcia z rezonansu magnetycznego głowy wraz z zaznaczonymi obszarami zmian nowotworowych. Obrazy są rozmiaru 256x256x3. Pierwszy kanał jest zdjęciem wykonanym przed wprowadzeniem kontrastu, drugi w trakcie, a trzeci po. Maski mają rozmiar 256x256, a każdy piksel ma wartość 0 albo 255 (255 oznacza komórkę nowotworową). Na rysunku \ref{fig:medical_description} pokazane są osobne kanały oraz maska.
+Dane pochodzą z Uniwersytetu Duke'a (ang. Duke University). Są to zdjęcia głowy wykonane metodą obrazowania rezonansu magnetycznego w technice FLAIR (ang. fluid-attenuated inversion recovery) wraz z zaznaczonymi obszarami zmian nowotworowych. Obrazy mają rozmiar 256x256x3 pikseli, gdzie pierwszy kanał odpowiada momentowi przed wprowadzeniem kontrastu, trzeci po, a drugi jest właściwym zdjęciem. Maski mają rozmiar 256x256 pikseli o wartościach odpowiednio 255 dla komórek nowotworowych i 0 w przeciwnym wypadku. Na rysunku \ref{fig:medical_description} pokazane są zdjęcia z podziałem na kanały i odpowiadające im maski.
 
 \begin{figure}[h!]
     \centering
@@ -13,7 +11,7 @@ Dane pochodzą z Duke University. Są to zdjęcia z rezonansu magnetycznego gło
     \label{fig:medical_description}
 \end{figure}
 
-Dane pogrupowane są dla 110 pacjentów. Zestaw dla jednego z nich znajduje się na rysunku \ref{fig:medical_sample}. Łącznie znajduje się 3929 par obrazów, z czego w 1373 jest przynajmniej jedna komórka nowotworowa ($\sim$34.95\%). Natomiast w całym zbiorze piksele oznaczające zmiany nowotworowe stanowią jedynie $\sim$1.02988\% wszystkich pikseli. Przy tak znaczącej dysproporcji ciężko liczyć na rzetelne podejście supervised, dlatego będę chciał spróbować podejścia unsupervised. Założeniem wykorzystania VAE będzie patrzenie na koszty. Hipotezą jest to, że obrazki z rakiem, czyli takie mało prawdopodobne będą zauważalne w rozkładzie i rekonstrukcji.
+Dane pogrupowane są dla 110 pacjentów ze zdiagnozowanym nowotworem. Na rysunku \ref{fig:medical_sample} zaprezentowałem zdjęcia pojedynczej osoby w trzech kanałach. Łącznie w zbiorze danych znajduje się 3929 par obrazów, przy czym jedynie $\sim1.02988\%$ pikseli zostało zidentyfikowanych jako komórki nowotworowe, co potwierdza obserwację odnośnie ich rzadkości.
 
 \begin{figure}[h!]
     \centering
@@ -22,50 +20,41 @@ Dane pogrupowane są dla 110 pacjentów. Zestaw dla jednego z nich znajduje się
     \label{fig:medical_sample}
 \end{figure}
 
-Pacjenci zostali podzieleni na 2 zbiory: treningowy (70\%), testowy (30\%). Obrazki oznaczające komórki rakowe będę nazywał pozytywnymi, a tez bez negatywnymi.
+\section{Wstępna obróbka}
 
-\subsection{Patches}
+Dane podzieliłem na 2 rozłączne zbiory ze względu na pacjentów w stosunku 70\% dla zestawu treningowego i 30\% dla testowego.
 
-Rekonstrukcje nie chcemy robić od razu z całego obrazku, a jedynie z niewielkich wycinków. Rozmiar wycinków ustalę na podstawie wyników osiąganych przez modele supervised, tj. regresja liniowa, małe cnn (mnist), cnn (cifar10). Będę testował rozmiary 16, 22, 28, 32, 48, 64. 
+\subsection{Podział na mniejsze kawałki}
 
-Na obrazku \ref{fig:supervised_patches} widać wyniki dla poszczególnych modeli i rozmiarów. Patrzymy na 2 wartości true positive rate i true negative rate. Najepszy przypadek jest w takim razie w punkcie (1, 1). Obrazek (d) prezentuje średnie wyniki dla każdego z rozmiaru. Przy takim liczeniu najlepsze wyniki wyszły dla rozmiarów odpowiednio 16 i 22. W dalszych eksperymentach będę korzystał z pachy o rozmiarze 22 ze względu na troche wieksze pole obserwacji.
+Danymi, które rzeczywiście mnie interesują są poszczególne komórki w mózgu. To co chciałbym umieć oceniać to ich patologiczność. Mam zamiar to robić na podstawie kontekstu w jakim się znajdują, czyli lokalnego sąsiedztwa na zdjęciu. W praktyce sprowadzi się to do utożsamiania wycinka obrazu rozmiaru $n$ x $n$ z wartością komórki leżącą w jego środku. W takim sensie chce podzielić zbiór danych na mniejsze kawałki, żeby każdej komórce odpowiadał jej kontekst. Jednak parametrem wymagającym ustalenia jest rozmiar takiego sąsiedztwa. Musze wiedzieć czy kawałek o danych wymiarach będzie zawierał wystarczającą ilość informacji potrzebnych do poprawnej klasyfikacji. Teoretycznie za kontekst mógłbym uznać cały obrazek, ale zależy mi też na ograniczeniu rozmiaru modelu i potrzebnej w związku z tym mocy obliczeniowej. Do wyznaczenia tej wartości skorzystam z podejścia nauki nadzorowanej, co może wydawać się sprzeczne z moją początkową deklaracją, ale ten krok służy jedynie we wsparciu wyboru optymalnego rozmiaru i nie jest wymagany.
+
+Decyzję podejmę na podstawie rezultatów osiąganych przez modele takie jak regresja liniowa oraz splotowa sieć neuronowa dla następujących rozmiarów: 16, 22, 28, 32, 48, 64. Zakładam, że jeśli w jakimś przypadku dokładność będzie zadowalająca, to ilość obecnych informacji wystarczy do rekonstrukcji. Warto w tym miejscu wspomnieć, że przy takim podejściu muszę zrównoważyć dane w zbiorze treningowym, ponieważ aktualnie jednych jest około 100 razy mniej niż drugich. Rozwiążę to na takiej zasadzie, że w trakcie uczenia porcję danych wejściowych będę komponował losując połowę próbek z jednej klasy i połowę z drugiej. Może to wpłynąć negatywnie na obciążenie modelu, ale i tak ostateczna klasyfikacja będzie odbywać się z wykorzystaniem progu, co powinno zredukować ten błąd. Wyniki zaprezentowałem przy pomocy krzywych ROC na wykresie \ref{fig:supervised_patches}. Jak można zauważyć wszystkie rozważane rozmiary prezentują się równie dobrze, w związku z czym zdecydowałem się wybrać jako parametr liczbę 22.
 
 \begin{figure}[h!]
   \centering
   \begin{subfigure}[b]{0.45\linewidth}
-    \includegraphics[width=\linewidth]{images/logreg_patch}
-    \caption{Coffee.}
+    \includegraphics[width=\linewidth]{images/logreg_patch_roc}
+    %\caption{}
   \end{subfigure}
   \begin{subfigure}[b]{0.45\linewidth}
-    \includegraphics[width=\linewidth]{images/cnn_patch}
-    \caption{More coffee.}
+    \includegraphics[width=\linewidth]{images/cnn_patch_roc}
+    %\caption{}
   \end{subfigure}
-  \begin{subfigure}[b]{0.45\linewidth}
-    \includegraphics[width=\linewidth]{images/smallcnn_patch}
-    \caption{More coffee.}
-  \end{subfigure}
-  \begin{subfigure}[b]{0.45\linewidth}
-    \includegraphics[width=\linewidth]{images/patch_score}
-    \caption{More coffee.}
-  \end{subfigure}
-  \caption{The same cup of coffee. Two times.}
+  \caption{}
   \label{fig:supervised_patches}
 \end{figure}
-\improvement{Uzupełnić podpisy}
 
-\subsection{Preprocessing}
+Dodatkowo chciałem sprawdzić jak taki prosty model rzeczywiście poradzi sobie w przypadku problemu identyfikowania komórek nowotworowych u pacjenta. Nie jest to oczywiście najlepsza metoda dla podejścia nadzorowanego, ponieważ jedną z nich jest architektura U-Net, ale powinno to wystarczyć jako punkt odniesienia dla autoenkodera.
 
-Na obrazku \ref{fig:pixel_sums} przedstawiony jest histogram zsumowanych wartości pikseli dla każdego patchu rozmiaru 22 z podziałem na klasy. Minimalna wartość sumy dla klasy pozytywnej wynosi $56.5$. Oznacza to, że ze zbioru treningowego można usunąć obrazki o mniejszej sumie, gdyż automatycznie są to negatywne obrazki. Usunięcie obrazków o wartości mniejszej niż 42 zmniejszy dane o $45.5\%$ i usunięcie trywialnych przypadków czyli prawie całych czarnych obrazków.
+Jako model rozważań wybrałem sieć splotową, a próg kategoryzacji jako najlepszy punkt odcięcia na krzywej ROC ograniczający odsetek wyników fałszywie pozytywnych do $1\%$.
+
+\subsection{Dodatkowe przygotowanie zbioru}
+
+Po zdecydowaniu się na łatki rozmiaru 22 i przygotowaniu takiego zbioru postanowiłem dodatkowo przeanalizować jego zawartość w celu znalezienia trywialnych przypadków. Jednym z nich były kawałki znajdujące się poza czaszkę, które nigdy nie są nowotworowe. Będą to obrazki o niskiej łącznej sumie pikseli, co zaprezentowane jest na histogramie \ref{fig:pixel_sums} (zwracam uwagę na różne skale na osiach). Na początku można zauważyć sporą grupę przypadków niepatologicznych. Sprawdziłem, że minimalna wartość sumy dla klasy odpowiadającej nowotworom wynosi $56.5$. Przy tym założeniu usunąłem wszystkie obrazki u sumie mniejszej, niż $42.0$ co zmniejszyło ilość danych o $45.5\%$, pozbywając się trywialnych próbek. Dany próg będę oczywiście uwzględniał w późniejszej klasyfikacji.
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=0.7\textwidth]{images/pixel_sums}
+    \includegraphics[width=1.0\textwidth]{images/pixel_sums}
     \caption{}
     \label{fig:pixel_sums}
 \end{figure}
-
-\subsection{Normalizations}
-
-\unsure{Może LIME?}
-
-\todo[inline]{Rozważyć normalizacje: histogramowa, tylko środkowy kanał}
