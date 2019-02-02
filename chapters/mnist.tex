@@ -4,7 +4,7 @@ Do przetestowania pomysłu posłuży mi zbiór MNIST. Jest to zestaw odręcznie 
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=0.4\textwidth]{images/mnist_v2}
+    \includegraphics[width=0.5\textwidth]{images/mnist_v2}
     \caption{Przykładowe dane ze zbioru MNIST}
     \label{fig:mnist}
 \end{figure}
@@ -15,16 +15,16 @@ Chciałbym zacząć od sprawdzenia podstawowych własności autoenkodera wariacy
 
 \begin{figure}[h!]
   \centering
-  \begin{subfigure}[b]{0.45\linewidth}
-    \missingfigure[]{ Box plot z rozkładem błędów średniokwadratowych }
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1.0\textwidth]{images/mnist_recon_v3}
     \caption{}
   \end{subfigure}
-  \begin{subfigure}[b]{0.45\linewidth}
-    \missingfigure[]{ Generowanie nowych próbek }
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1.0\textwidth]{images/vae_mse}
     \caption{}
   \end{subfigure}
-  \begin{subfigure}[b]{0.5\linewidth}
-    \includegraphics[width=1.0\textwidth]{images/mnist_recon_v2}
+  \begin{subfigure}[b]{0.7\linewidth}
+    \includegraphics[width=1.0\textwidth]{images/mnist_gen_v2}
     \caption{}
   \end{subfigure}
   \caption{}
@@ -34,8 +34,8 @@ Chciałbym zacząć od sprawdzenia podstawowych własności autoenkodera wariacy
 Ze względu na łatwość wizualizacji, do sprawdzenia jak dane reprezentowane są w przestrzeni ukrytej wybrałem model bazujący na wymiarze rozmiaru 2. Zdaję sobie sprawę, że rekonstrukcje w tym przypadku nie są najlepszej jakości, ze względu na zbyt ograniczoną ilość informacji możliwych do przekazania, ale zależy mi też na przedstawieniu podstawowych założeń. W tym celu na wykresie dla losowych próbek zaznaczyłem odpowiadające im średnie oraz odchylenia. Otrzymany rezultat widać na obrazku \ref{fig:mnist_2d}, gdzie można zauważyć opisane wcześniej własności wybranego modelu takie jak skoncentrowanie reprezentacji wokół $\vec{0}$ czy ciągłość przestrzeni.
 
 \begin{figure}[h!]
-    \centering
-    \includegraphics[width=1.\textwidth]{images/mnist_2d}
+    %\centering
+    \includegraphics[width=1.2\textwidth,center]{images/mnist_2d}
     \caption{}
     \label{fig:mnist_2d}
 \end{figure}
