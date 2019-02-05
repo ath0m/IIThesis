@@ -51,7 +51,7 @@ Autoenkoder wariacyjny (VAE, ang. Variational Autoencoder) rozszerza założenia
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=1.0\textwidth]{images/vae_model}
+    \includegraphics[width=1.0\textwidth]{images/vae}
     \caption{Architektura autoenkodera wariacyjnego}
     \label{fig:vae_model}
 \end{figure}
@@ -59,19 +59,33 @@ Autoenkoder wariacyjny (VAE, ang. Variational Autoencoder) rozszerza założenia
 Intuicyjnie wektor średnich oznacza miejsce, gdzie zakodowana zmienna powinna być wycentrowana, natomiast odchylenie kontroluje obszar, wokół którego kodowanie może się różnić. Sytuację tę zaprezentowałem na wykresie \ref{fig:vae_vs_stand}, przy czym porównałem z podstawową wersją. W jej przypadku informacja wychodząca z enkodera jest bardzo precyzyjna, natomiast w obecnie rozważanym modelu, dzięki dodaniu szumu, zostaje ona rozmyta. Taki zabieg ma za zadanie ograniczyć zjawisko przeuczenia oraz wprowadzić pewną lokalną ciągłość w przestrzeni. Jest to wynikiem tego, że gdy kodowanie losowane jest z wnętrza kuli, notabene o nieskończonym promieniu, ale ustalonej gęstości, to dekoder zmuszony jest nauczyć się, że nie jedynie pojedynczy punkt odnosi się do danej próbki, ale i również jego całe lokalne sąsiedztwo. To pozwala dekodować nie tylko specyficzne reprezentacje (pozostawiając przestrzeń nieciągłą), ale też te trochę różniące się, ponieważ model narażony jest na szereg zmian kodowania tego samego wejścia podczas treningu.
 
 \begin{figure}[h!]
-    \centering
-    \includegraphics[width=0.7\textwidth]{images/vae_vs_stand}
-    \caption{}
-    \label{fig:vae_vs_stand}
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1.0\textwidth]{images/vae_vs_stand_a}
+    \caption{Standardowy autoenkoder}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1.0\textwidth]{images/vae_vs_stand_b}
+    \caption{Autoenkoder wariacyjny}
+  \end{subfigure}
+  \caption{}
+  \label{fig:vae_vs_stand}
 \end{figure}
 
 Model jest teraz wystawiony na pewien stopień lokalnej zmienności przez wprowadzenie szumu do kodowania pojedynczej próbki, co skutkuje ciągłą przestrzenią w reprezentacji ukrytej dla lokalnego sąsiedztwa. Jednak na razie nie ma ograniczeń co do wartości jakie mogą być przyjmowane przez wektory $\mu$ i $\sigma$, a w rezultacie enkoder może nauczyć się generować bardzo różne $\mu$ dla różnych klas i grupować je minimalizując $\sigma$, upewniając się przy tym, że samo kodowanie nie różni się zbytnio dla tej samej próbki. W szczególności prawdopodobnym jest wystąpienie tak patologicznej sytuacji, gdzie $\sigma$ zawsze wynosi 0, przez co nowy model nie będzie różnić się w działaniu od jego podstawowej wersji, włącznie z uwzględnieniem wad, które starał się wyeliminować. Omawiany przeze mnie przykład przedstawiony jest na rysunku \ref{fig:vae_nolimits}. Oczekiwaną sytuacją byłoby rozłożenie danych blisko siebie, ale z zachowaniem ich separowalności. Pozwoliłoby to na gładką interpolacje pomiędzy próbkami i generowanie nowych danych.
 
 \begin{figure}[h!]
-    \centering
-    \includegraphics[width=0.7\textwidth]{images/vae_nolimits}
-    \caption{}
-    \label{fig:vae_nolimits}
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1.0\textwidth]{images/vae_nolimits_a}
+    \caption{Oczekiwany układ}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=1.0\textwidth]{images/vae_nolimits_b}
+    \caption{Niezamierzony układ}
+  \end{subfigure}
+  \caption{}
+  \label{fig:vae_vs_stand}
 \end{figure}
 
 W celu osiągnięcia zamierzonych rezultatów, należy wzbogacić funkcję straty o koszt dywergencji Kullbacka-Leiblera, która mierzy różnicę pomiędzy dwoma rozkładami prawdopodobieństwa. Minimalizowanie go oznacza optymalizowanie parametrów rozkładu ($\mu$ i $\sigma$), tak żeby jak najbardziej przypominał docelowy rozkład, który w przypadku autoenkodera wariacyjnego będzie standardowym rozkładem normalnym ($\mu = 0$,  $\sigma = 1$).

@@ -6,16 +6,20 @@ W tabeli \ref{table:results} zostały przedstawione wyniki dla czterech kombinac
 
 \begin{table}[h!]
 	\centering
-    \begin{tabular}{ l | c }
+    \begin{tabular}{ l | c c c c c c }
+ 
+    \multicolumn{1}{c}{Model} & \multicolumn{6}{c}{Epoka} \\
+    \cmidrule(r){1-1} \cmidrule(r){2-7}
+    %\toprule
+     		& 1 & 2 & 3 & 20 & 60 & 80 \\ \cmidrule(r){2-7}
+    VAE 20-d 	& 0.494 & 0.693 & 0.655 & 0.612 & 0.597 & 0.590 \\ \hline
+    VAE 50-d 	& 0.552 & 0.686 & \textbf{0.711} & 0.616 & 0.606 & 0.592 \\ \hline
+    VAE 100-d 	& 0.580 & 0.685 & 0.650 & 0.614 & 0.595 & 0.594 \\ \hline
+    VAE 200-d   & 0.661 & 0.675 & 0.668 & 0.620 & 0.608 & 0.597 \\ \hline
+    VAE 300-d   & 0.704 & 0.671 & 0.657 & 0.620 & 0.600 & 0.593 \\
     \toprule
-    Model 			& Best ROC AUC \\ \midrule
-    VAE 				& 0.68 (1) \\
-    VAE + Softmax 	& 0.68 (1) \\
-    C-VAE 			& 0.59 (1) \\
-    C-VAE + Softmax & 0.67 (1) \\
-    \bottomrule
     \end{tabular}
-    \caption{My table}
+    \caption{AUC przy danym modelu w danej epoce}
 	\label{table:results}
 \end{table}
 \improvement{Dodać z-dim}
@@ -28,21 +32,21 @@ Pierwszym pomysłem jest, żeby sprawdzić rozkład obrazków w zależności od 
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=1.0\textwidth]{images/soft_vae}
+    \includegraphics[width=1.0\textwidth]{images/soft_vae_v2}
     \caption{}
     \label{fig:soft_vae}
 \end{figure}
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=1.0\textwidth]{images/soft_vae_th}
+    \includegraphics[width=1.0\textwidth]{images/soft_vae_th_v2}
     \caption{}
     \label{fig:soft_vae_th}
 \end{figure}
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=1.0\textwidth]{images/pixels_hist}
+    \includegraphics[width=1.0\textwidth]{images/pixels_hist_v2}
     \caption{}
     \label{fig:pixels_hist}
 \end{figure}
