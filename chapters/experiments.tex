@@ -1,8 +1,6 @@
 \section{Wyniki}
 
-Przetestuje 4 kombinacje modeli, ze zmienioną funckją kosztu
-
-W tabeli \ref{table:results} zostały przedstawione wyniki dla czterech kombinacji modeli oraz parametrów. Wartości liczbowe opisują najlepsze AUC ROC podczas uczenia wraz z odpowiadającą epoką. Jak widać w tym zestawieniu najlepiej wypadły podstawowe modele VAE.
+W tabeli \ref{table:results} przedstawiłem wyniki dla modeli z różnymi rozmiarami reprezentacji ukrytej oraz w różnych etapach nauki. Tak samo jak w poprzednich eksperymentach miarą pomiarową, którą obserwowałem było AUC na podstawie wartości funkcji straty. Można zauważyć szybkie przeuczenie się modeli, ponieważ w większości przypadków już od 3 epoki wyniki pogarszają się. Dodatkowo wraz z czasem pomiary stają się prawie jednakowe dla wszystkich rozmiarów. 
 
 \begin{table}[h!]
 	\centering
@@ -13,8 +11,8 @@ W tabeli \ref{table:results} zostały przedstawione wyniki dla czterech kombinac
     %\toprule
      		& 1 & 2 & 3 & 20 & 60 & 80 \\ \cmidrule(r){2-7}
     VAE 20-d 	& 0.494 & 0.693 & 0.655 & 0.612 & 0.597 & 0.590 \\ \hline
-    VAE 50-d 	& 0.552 & 0.686 & \textbf{0.711} & 0.616 & 0.606 & 0.592 \\ \hline
-    VAE 100-d 	& 0.580 & 0.685 & 0.650 & 0.614 & 0.595 & 0.594 \\ \hline
+    VAE 50-d 	& 0.552 & 0.686 & 0.697 & 0.616 & 0.606 & 0.592 \\ \hline
+    VAE 100-d 	& 0.580 & 0.685 & \textbf{0.701} & 0.614 & 0.595 & 0.594 \\ \hline
     VAE 200-d   & 0.661 & 0.675 & 0.668 & 0.620 & 0.608 & 0.597 \\ \hline
     VAE 300-d   & 0.704 & 0.671 & 0.657 & 0.620 & 0.600 & 0.593 \\
     \toprule
@@ -22,13 +20,10 @@ W tabeli \ref{table:results} zostały przedstawione wyniki dla czterech kombinac
     \caption{AUC przy danym modelu w danej epoce}
 	\label{table:results}
 \end{table}
-\improvement{Dodać z-dim}
 
 \section{Analiza}
 
-Zajmę się analizą modelu w wersji VAE + Softmax. Na wykresie \ref{fig:soft_vae} przedstawione są koszty, ich rozkłady, przykłady rekonstrukcji oraz krzywa ROC. Ciekawie wyglądają te dwa zauważalne ogony na wykresie. Postaram sie lepiej przyjrzeć ich specyfice. 
-
-Pierwszym pomysłem jest, żeby sprawdzić rozkład obrazków w zależności od ich jasności, czyli łącznej sumy pikseli. Ciemne obrazki defiuniuje jako te o niskiej sumie, a jasne o wysokiej. Na rysunku \ref{fig:soft_vae_th} zaznaczyłem negatywne obrazki, dla których suma <= 50 oraz pozytywne obrazki z sumą co najmniej 150. Zaznaczone śa one odpowiednio zielonym i czerwonym kolorem na wykresie. Jak widać po rozkładach składają się one na dokładnie te 2 separowalne ogony. Wniosek z tego jest następujący. Na podstawie tego modelu możemy odesparować jedynie najciemniejsze i najjaśniejsze obrazki z obydwu klas. W takim razie model nie robi nic nadzwyczajnego. Wystarczy przyjrzeć się histogramowi na rysunku \ref{fig:pixels_hist} z zaznaczonymi progami. One już bardzo dobrze separują te klasy. 
+Zajmę się analizą modelu, który osiągnął najlepszy rezultat, czyli autoenkodera wariacyjnego bazującego na reprezentacji ukrytej rozmiaru 100 po 3 epokach nauki. Na rysunku \ref{fig:soft_vae} widać wykres z zaznaczonymi poszczególnymi składnikami kosztu, czyli koszt KLD i rekonstrukcji NLL. Przypomnę, że na bazie ich sumy liczona jest krzywa ROC. Można zauważyć specyficzny rozkład punktów. Ponad to na rysunku pokazane są przykładowe rekonstrukcje, ale prawdopodobnie ze względu na zbyt krótki czas nauki nie prezentują się one najlepiej.
 
 \begin{figure}[h!]
     \centering
@@ -37,12 +32,7 @@ Pierwszym pomysłem jest, żeby sprawdzić rozkład obrazków w zależności od 
     \label{fig:soft_vae}
 \end{figure}
 
-\begin{figure}[h!]
-    \centering
-    \includegraphics[width=1.0\textwidth]{images/soft_vae_th_v2}
-    \caption{}
-    \label{fig:soft_vae_th}
-\end{figure}
+Chciałbym w tym miejscu wrócić to dwóch grup punktów, które się dobrze separowały i sprawdzić jaka ich własność mogła na to wpłynąć. Prostą obserwacją z poprzedniej analizy danych jest to, że obrazki dotyczące komórek nowotworowych są z reguły jaśniejsze od tych dotyczących zdrowych. Jasność obrazka będę utożsamiał z sumą pikseli. Niska wartość będzie oznaczać dla mnie ciemne obrazki, a wysoka jasne. Na wykresie \ref{fig:pixels_hist} znajduje się histogram dla sumy piksli zdjęć z zestawu testowego.
 
 \begin{figure}[h!]
     \centering
@@ -51,7 +41,16 @@ Pierwszym pomysłem jest, żeby sprawdzić rozkład obrazków w zależności od 
     \label{fig:pixels_hist}
 \end{figure}
 
-\subsection{Wnioski}
+Można zauważyć, że występują dwa progi, które w łatwy sposób klasyfikują sporą część danych z dużą dokładnością. Jest to odpowiednio 50.0 dla obrazków negatywnych i 150.0 dla pozytywnych. Znalazłem obrazki, które można zidentyfikować w ten sposób i zaznaczyłem ich położenie na oryginalnym wykresie. W ten sposób otrzymałem wykres \ref{fig:soft_vae_th}.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=1.0\textwidth]{images/soft_vae_th_v2}
+    \caption{}
+    \label{fig:soft_vae_th}
+\end{figure}
+
+Widać, że są to dokładnie te same grupy danych, które dobrze się separowały. Wniosek z tego jest taki, że w wypadku modelu uczonego prawie jedynie na obrazkach bez zmian nowotworowych, ciemne próbki są bardzo prawdopodobne, a jasne już nie. Model nie dał rady znaleźć innych cech, które dobrze pozwoliłyby rozróżniać te dwie grupy. 
 
 
 
