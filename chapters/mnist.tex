@@ -11,21 +11,21 @@ Do przetestowania pomysłu posłuży mi zbiór MNIST. Jest to zestaw odręcznie 
 
 \section{Mozliwości autoenkodera wariacyjnego} \label{sec:vae_oppo}
 
-Chciałbym zacząć od sprawdzenia podstawowych własności autoenkodera wariacyjnego, przedstawionych w rozdziale \ref{sec:vae} W tym celu wytrenowałem modele o różnych rozmiarach reprezentacji ukrytej: 2, 5, 7, 20, 50. Następnie sprawdziłem jak radzą sobie z rekonstrukcją danych ze zbioru testowego oraz generowaniem nowych próbek. Wyniki prezentują się na rysunku \ref{fig:mnist_recon}. 
+Zacząłem od sprawdzenia podstawowych własności autoenkodera wariacyjnego, przedstawionych w rozdziale \ref{sec:vae} W tym celu wytrenowałem modele o różnych rozmiarach reprezentacji ukrytej: 2, 5, 7, 20, 50. Następnie sprawdziłem jak radzą sobie z rekonstrukcją danych ze zbioru testowego oraz generowaniem nowych próbek. Wyniki prezentują się na rysunku \ref{fig:mnist_recon}. 
 
 \begin{figure}[h!]
   \centering
   \begin{subfigure}[b]{0.7\linewidth}
     \includegraphics[width=1.0\textwidth]{images/mnist_recon_v3}
-    \caption{}
+    \caption{Przedstawienie rekonstrukcji w zależności od rozmiaru reprezentacji ukrytej}
   \end{subfigure}
   \begin{subfigure}[b]{0.7\linewidth}
     \includegraphics[width=1.0\textwidth]{images/vae_mse}
-    \caption{}
+    \caption{Porównanie błędów średniokwadratowych na rekonstrukcjach dla zbioru testowego}
   \end{subfigure}
   \begin{subfigure}[b]{0.7\linewidth}
     \includegraphics[width=1.0\textwidth]{images/mnist_gen_v2}
-    \caption{}
+    \caption{Przykładowe zdekodowane próbki wylosowane z $\mathcal{N}(0,\,1)$}
   \end{subfigure}
   \caption{}
   \label{fig:mnist_recon}
@@ -36,7 +36,7 @@ Ze względu na łatwość wizualizacji, do sprawdzenia jak dane reprezentowane s
 \begin{figure}[h!]
     %\centering
     \includegraphics[width=1.2\textwidth,center]{images/mnist_2d}
-    \caption{}
+    \caption{Rozkład konkretnych próbek w przestrzeni ukrytej z zaznaczonym odchyleniem standardowym}
     \label{fig:mnist_2d}
 \end{figure}
 
@@ -48,19 +48,20 @@ Przygotowana przeze mnie symulacja prezentuje się następująco. Zbiór danych 
 
 Klasyfikacja odbywać się będzie na podstawie wartości funkcji straty dla autoenkodera wariacyjnego, którą można interpretować jako ograniczenie prawdopodobieństwa. Takie podejście wymaga ustalenia pewnego progu kategoryzacji, dlatego w tym miejscu będę prezentował krzywą ROC, która rozważa wszystkie sensowne wartości. Dodatkowo zaprezentuję dwa składniki błędu oddzielnie, przez co będzie można zaobserwować, który z nich ma największy wpływ.
 
-Na podstawie wniosków z rozdziału \ref{sec:vae_oppo} wybrałem rozmiar warstwy ukrytej równy 10. Wyniki zaprezentowane są na rysunku \ref{fig:mnist_compare} oraz \ref{fig:mnist_roc}.
-
 \begin{figure}[h!]
     \centering
     \includegraphics[width=1.0\textwidth]{images/mnist_complex}
-    \caption{}
+    \caption{Rozkład punktów wraz z przykładami ze względu na poszczególne składniki funkcji straty}
     \label{fig:mnist_compare}
 \end{figure}
+
+Na podstawie wniosków z rozdziału \ref{sec:vae_oppo} wybrałem rozmiar warstwy ukrytej równy 10. Wyniki zaprezentowane są na rysunku \ref{fig:mnist_compare} oraz \ref{fig:mnist_roc}. Poza tym, że widać dobrą separację danych, na przybliżonym wycinku można zauważyć obok ogólnie mało prawdopodobnych cyfr 5 cyfry 7 z poprzeczną kreską, które same w sobie są rzadkie.
+
 
 \begin{figure}[h!]
     \centering
     \includegraphics[width=0.5\textwidth]{images/mnist_roc_v2}
-    \caption{}
+    \caption{Krzywa ROC dla modelu wyuczonego na danych syntetycznych z zachowaniem odpowiedniej dysproporcji w danych}
     \label{fig:mnist_roc}
 \end{figure}
 

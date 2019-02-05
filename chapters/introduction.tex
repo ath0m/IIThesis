@@ -2,11 +2,11 @@
 
 \section{Przedstawienie problemu}
 
-Problem, który zainspirował mnie do napisania tej pracy to lokalizowanie zmian nowotworowych na zdjęciach wykonanych metodą rezonansu magnetycznego (MRI, ang. magnetic resonance imaging). Można podejść do niego od strony nadzorowanej, czyli bazować na danych przeanalizowanych wcześniej przez specjalistów, gdzie każdy przypadek został ręcznie obejrzany i oznaczony. O ile taka metoda ma wiele zalet, jak chociażby korzystanie z rzeczywistej wiedzy eksperckiej, to wykorzystywany zbiór jest bardzo kosztowny w przygotowaniu i dalszym rozwoju, a ponadto może być ograniczony jedynie do pojedynczej partii ciała. Zauważając te wady oraz łącząc je z obserwacją, że zmiany patologiczne tak na prawdę są rzadkie i są pewnym odstępstwem od normy, chciałbym spróbować skorzystać z metody nienadzorowanej, w której to model nauczyłby się oszacowywać prawdopodobieństwo występowania pojedynczej próbki w pewnym kontekście. Przy takim podejściu mógłbym oznaczać obserwacje mało prawdopodobne jako właśnie te nowotworowe. Model, na którego wykorzystanie się zdecydowałem to autoenkoder wariacyjny (VAE, ang. Variational Autoencoder), łączący sztuczne sieci neuronowe z modelowaniem probabilistycznym. Pomysł ten chce przetestować początkowo na danych syntetycznych z wykorzystaniem zbioru MNIST.
+Problem, który rozważam to lokalizowanie zmian nowotworowych na zdjęciach wykonanych metodą rezonansu magnetycznego (MRI, ang. magnetic resonance imaging). Można podejść do niego od strony nadzorowanej, czyli bazować na danych przeanalizowanych wcześniej przez specjalistów, gdzie każdy przypadek został ręcznie obejrzany i oznaczony. O ile taka metoda ma wiele zalet, jak chociażby korzystanie z rzeczywistej wiedzy eksperckiej, to wykorzystywany zbiór jest bardzo kosztowny w przygotowaniu i dalszym rozwoju, a ponadto może być ograniczony jedynie do pojedynczej partii ciała. Zauważając te wady oraz łącząc je z obserwacją, że zmiany patologiczne tak na prawdę są rzadkie i są pewnym odstępstwem od normy, chce spróbować skorzystać z metody nienadzorowanej, w której to model nauczyłby się oszacowywać prawdopodobieństwo występowania pojedynczej próbki w pewnym kontekście. Przy takim podejściu mogę oznaczać obserwacje mało prawdopodobne jako właśnie te nowotworowe. Dodatkowo sama tak informacja może również pomóc specjalistom przy wyłanianiu obszarów podejrzanych. Model, na którego wykorzystanie się zdecydowałem to autoenkoder wariacyjny (VAE, ang. Variational Autoencoder), łączący sztuczne sieci neuronowe z modelowaniem probabilistycznym. Pomysł ten przetestuje początkowo na danych syntetycznych z wykorzystaniem zbioru MNIST.
 
 \section{Sztuczne sieci neuronowe}
 
-Sztuczne sieci neuronowe mają obecnie bardzo mocno ugruntowaną pozycję szczególnie w dziedzinie problemów związanych z analizą i przetwarzaniem obrazów. Pomimo, iż nie jest to nowy pomysł, dopiero ostatni wzrost w wydajności komputerów pozwolił na ich praktyczne zastosowanie. Z matematycznego punktu widzenia są to sparametryzowane nieliniowe funkcje o pewnej ustalonej strukturze. Składają się z prostych elementów zwanych neuronami, a one natomiast są pogrupowane w warstwy. Połączenia między warstwami definiują przepływ danych. 'Nauka' sieci neuronowych polega na optymalizacji pewnej funkcji straty, czyli wyznaczeniu takich parametrów, żeby osiągnąć minimalny koszt. Do tego celu często korzysta się z metod opartych na Stochastic Gradient Descent, a przy wybranej strukturze można w efektywny sposób zastosować algorytm propagacji wstecznej. W dalszej części pracy będę używał prostszej nazwy - sieci neuronowe. Przykładowa architektura sieci neuronowych jest zaprezentowana na wykresie \ref{fig:neural_nets}.
+Sztuczne sieci neuronowe mają obecnie bardzo mocno ugruntowaną pozycję szczególnie w dziedzinie problemów związanych z analizą i przetwarzaniem obrazów. Pomimo, iż nie jest to nowy pomysł, dopiero ostatni wzrost w wydajności komputerów pozwolił na ich praktyczne zastosowanie. Z matematycznego punktu widzenia są to sparametryzowane nieliniowe funkcje o pewnej ustalonej strukturze. Składają się z prostych elementów zwanych neuronami, a one natomiast są pogrupowane w warstwy. Połączenia między warstwami definiują przepływ danych. 'Nauka' sieci neuronowych polega na optymalizacji pewnej funkcji straty, czyli wyznaczeniu takich parametrów, żeby osiągnąć minimalny koszt. Do tego celu często korzysta się z metod opartych na Stochastic Gradient Descent, a przy wybranej strukturze można w efektywny sposób zastosować algorytm propagacji wstecznej. W dalszej części pracy będę używał prostszej nazwy - sieci neuronowe. Przykładowa architektura sieci neuronowych jest zaprezentowana na rysunku \ref{fig:neural_nets}.
 
 \begin{figure}[h!]
     \centering
@@ -19,7 +19,9 @@ Sztuczne sieci neuronowe mają obecnie bardzo mocno ugruntowaną pozycję szczeg
 
 Są to dwa różne rodzaje problemów z dziedziny uczenia maszynowego. W przypadku uczenia nadzorowanego wiemy jaką chcemy uzyskać odpowiedź dla danego wejścia i próbujemy tak dobrać parametry modelu, żeby odpowiadał on z jak największą poprawnością. Przykładowymi zadaniami tego rodzaju są regresja oraz klasyfikacja, która nawiasem mówiąc może zostać uznana za problem regresji, ale na dyskretnym, skończonym zbiorze.
 
-Z grubsza odwrotnie jest w sytuacji bez nadzoru. Tam dla danych wejściowych nie znamy interesującej nas odpowiedzi i staramy się tak zbudować model, żeby był on w stanie sam ją wydobyć. Zazwyczaj interesuje nas rozwiązanie takich problemów jak klasteryzacja, redukcja wymiarowości czy wydajne kodowanie danych. Jednym z modeli wykorzystywanym w tej klasie zadań jest właśnie autoenkoder.
+Inaczej jest w sytuacji bez nadzoru. Tam dla danych wejściowych nie znamy interesującej nas odpowiedzi i staramy się tak zbudować model, żeby był on w stanie sam ją wydobyć. Zazwyczaj interesuje nas rozwiązanie takich problemów jak estymacja rozkładu prawdopodobieństwa z którego pochodzą dane, klasteryzacja, redukcja wymiarowości czy wydajne kodowanie danych. Jednym z modeli wykorzystywanym w tej klasie zadań jest właśnie autoenkoder.
+
+W przypadku identyfikacji próbek odstających można zwracać uwagę na ich estymowane prawdopodobieństwo oraz efektywność kodowania i dekodowania, które oba powinny być niskie.
 
 \section{Autoenkoder}
 
@@ -43,7 +45,7 @@ gdzie:
     \hat{Y}_{i}     &  zrekonstruowane dane
 \end{conditions}
 
-Wymagającym sprostowania może być fakt, iż mimo mówimy jakie oczekujemy wyjście z modelu, w sensie rekonstrukcji, to dalej jest to problem typu nauki bez nadzoru, ponieważ rzeczywistą szukaną przez nas wiedzą jest umiejętność kodowania danych i osobno ich dekodowania. Chciałbym w tym miejscu zastanowić się co dzięki temu zyskujemy. Już teraz zaletą jest oczywiście redukcja wymiarowości, która ułatwia późniejszą analizę danych oraz pozwala na ich kompresję i ewentualne odszumianie. Dodatkowo wydaje się, że mając wytrenowany dekoder, na konkretnej rodzinie danych, moglibyśmy zaaplikować do niego dowolne kodowanie i w ten sposób może otrzymać wynik pochodzący z oryginalnej dziedziny, czyli wykorzystać go jako generator nowych próbek. Niestety ten pomysł ma taki problem, że podczas nauki nie ma żadnej kontroli nad tym jak dane zostaną rozrzucone w przestrzeni, która notabene jest nieskończona (z ograniczeniem do pojemności liczb zmiennoprzecinkowych). W takim razie nie wiemy jaka podprzestrzeń odpowiada tym kodowaniom, które są sensownie dekodowane, co jest potrzebne przy generowaniu, a dodatkowo jeśli bałaby nieciągła, to niemożliwe byłoby interpolowanie pomiędzy próbkami. Znaczącym problemem jest natomiast to, że kodowanie jako wektor liczb jest bardzo precyzyjną informacją, co może doprowadzić do przeuczenia modelu i błędnego działania na danych pochodzących z poza zbioru treningowego.
+Wymagającym sprostowania może być fakt, iż mimo mówimy jakie oczekujemy wyjście z modelu, w sensie rekonstrukcji, to dalej jest to problem typu nauki bez nadzoru, ponieważ rzeczywistą szukaną przez nas wiedzą jest umiejętność kodowania danych i osobno ich dekodowania. Chciałbym w tym miejscu zastanowić się co dzięki temu zyskujemy. Już teraz zaletą jest oczywiście redukcja wymiarowości, która ułatwia późniejszą analizę danych oraz pozwala na ich kompresję i ewentualne odszumianie. Dodatkowo wydaje się, że mając wytrenowany dekoder, na konkretnej rodzinie danych, moglibyśmy zaaplikować do niego jakieś nowe kodowanie i otrzymać w ten sposób wynik pochodzący z oryginalnej dziedziny, czyli wykorzystać go jako generator nowych próbek. Niestety ten pomysł ma taki problem, że podczas nauki nie ma żadnej kontroli nad tym jak dane zostaną rozmieszczone w przestrzeni, która notabene jest nieskończona (z ograniczeniem do pojemności liczb zmiennoprzecinkowych). W takim razie nie wiemy jaka podprzestrzeń odpowiada tym kodowaniom, które są sensownie dekodowane. Jest to potrzebne przy generowaniu. Dodatkowo jeśli przestrzeń byłaby nieciągła, to niemożliwe byłoby interpolowanie pomiędzy próbkami. Znaczącym problemem jest natomiast to, że kodowanie jako wektor liczb jest bardzo precyzyjną informacją, co może doprowadzić do przeuczenia modelu i błędnego działania na danych pochodzących z poza zbioru treningowego.
 
 \section{Autoenkoder wariacyjny} \label{sec:vae}
 
@@ -56,7 +58,7 @@ Autoenkoder wariacyjny (VAE, ang. Variational Autoencoder) rozszerza założenia
     \label{fig:vae_model}
 \end{figure}
 
-Intuicyjnie wektor średnich oznacza miejsce, gdzie zakodowana zmienna powinna być wycentrowana, natomiast odchylenie kontroluje obszar, wokół którego kodowanie może się różnić. Sytuację tę zaprezentowałem na wykresie \ref{fig:vae_vs_stand}, przy czym porównałem z podstawową wersją. W jej przypadku informacja wychodząca z enkodera jest bardzo precyzyjna, natomiast w obecnie rozważanym modelu, dzięki dodaniu szumu, zostaje ona rozmyta. Taki zabieg ma za zadanie ograniczyć zjawisko przeuczenia oraz wprowadzić pewną lokalną ciągłość w przestrzeni. Jest to wynikiem tego, że gdy kodowanie losowane jest z wnętrza kuli, notabene o nieskończonym promieniu, ale ustalonej gęstości, to dekoder zmuszony jest nauczyć się, że nie jedynie pojedynczy punkt odnosi się do danej próbki, ale i również jego całe lokalne sąsiedztwo. To pozwala dekodować nie tylko specyficzne reprezentacje (pozostawiając przestrzeń nieciągłą), ale też te trochę różniące się, ponieważ model narażony jest na szereg zmian kodowania tego samego wejścia podczas treningu.
+Intuicyjnie wektor średnich oznacza miejsce, gdzie zakodowana zmienna powinna być wycentrowana, natomiast odchylenie kontroluje obszar, wokół którego kodowanie może się różnić. Sytuację tę zaprezentowałem na wykresie \ref{fig:vae_vs_stand}, przy czym porównałem z podstawową wersją. W jej przypadku informacja wychodząca z enkodera jest bardzo precyzyjna, natomiast w obecnie rozważanym modelu, dzięki dodaniu szumu, zostaje ona rozmyta. Taki zabieg ma za zadanie ograniczyć zjawisko przeuczenia oraz wprowadzić pewną lokalną ciągłość w przestrzeni. Jest to wynikiem tego, że gdy kodowanie losowane jest z wnętrza kuli, notabene o nieskończonym promieniu, ale ustalonej gęstości, to dekoder zmuszony jest nauczyć się, że nie tylko pojedynczy punkt odnosi się do danej próbki, ale i również jego całe lokalne sąsiedztwo. To pozwala dekodować nie tylko specyficzne reprezentacje (pozostawiając przestrzeń nieciągłą), ale też te trochę różniące się, ponieważ model narażony jest na szereg zmian kodowania tego samego wejścia podczas treningu.
 
 \begin{figure}[h!]
   \centering
@@ -68,7 +70,7 @@ Intuicyjnie wektor średnich oznacza miejsce, gdzie zakodowana zmienna powinna b
     \includegraphics[width=1.0\textwidth]{images/vae_vs_stand_b}
     \caption{Autoenkoder wariacyjny}
   \end{subfigure}
-  \caption{}
+  \caption{Porównanie precyzji informacji dostarczanych przez enkodery}
   \label{fig:vae_vs_stand}
 \end{figure}
 
@@ -84,8 +86,8 @@ Model jest teraz wystawiony na pewien stopień lokalnej zmienności przez wprowa
     \includegraphics[width=1.0\textwidth]{images/vae_nolimits_b}
     \caption{Niezamierzony układ}
   \end{subfigure}
-  \caption{}
-  \label{fig:vae_vs_stand}
+  \caption{Porównanie rozkładów danych ze względu na brak ograniczeń dla reprezentacji. Przy czym ten pierwszy jest lepszy ponieważ obszar z którego generować można nowe dane jest spójny}
+  \label{fig:vae_nolimits}
 \end{figure}
 
 W celu osiągnięcia zamierzonych rezultatów, należy wzbogacić funkcję straty o koszt dywergencji Kullbacka-Leiblera, która mierzy różnicę pomiędzy dwoma rozkładami prawdopodobieństwa. Minimalizowanie go oznacza optymalizowanie parametrów rozkładu ($\mu$ i $\sigma$), tak żeby jak najbardziej przypominał docelowy rozkład, który w przypadku autoenkodera wariacyjnego będzie standardowym rozkładem normalnym ($\mu = 0$,  $\sigma = 1$).
@@ -96,11 +98,73 @@ Przy takim wyborze dane powinny zostać rozrzucone dookoła $\vec{0}$ i nie pozo
 \end{equation}
 
 
-\subsection{Opis matematyczny}
+\subsection{Model probabilistyczny}
 
-To co do tej pory napisałem odnośnie autoenkodera wariacyjnego raczej trzeba uznać za zbiór intuicji i oczekiwań. W tym rozdziale chciałbym pokazać jego funkcjonowanie od strony matematycznej.
+To co do tej pory napisałem odnośnie autoenkodera wariacyjnego raczej trzeba uznać za zbiór intuicji i oczekiwań. W tym rozdziale chciałbym pokazać jego funkcjonowanie od strony probabilistycznej.
 
-\add[inline]{Dokończyć}
+Myślimy, że autoenkoder wariacyjny modeluje wspólny rozkład prawdopodobieństwa $p(x, z)$, gdzie $x$ to obserwowane dane, a $z$ to zmienna ukryta. Możemy to rozpisać w następujący sposób $p(x, z) = p(x|z)p(z)$. Wróćmy teraz do założeń, gdzie zależało nam na produkowaniu dobrych reprezentacji dla określonej próbki, czyli wyznaczeniu prawdopodobieństwa a posteriori $p(z|x)$. Zgodnie z twierdzeniem Bayesa
+$$p(z|x)=\frac{p(x|z)p(z)}{p(x)}$$
+
+Problem jest jednak z mianownikiem $p(x)$. Można go obliczyć marginalizując zmienne ukryte, ale wtedy $p(x)=\int{p(x|z)p(z)dz}$ i wymaga to przejrzenia wszystkich kombinacji reprezentacji ukrytych. W takim razie w jakiś inny sposób trzeba policzyć to prawdopodobieństwo $p(z|x)$.
+
+Korzystając z wnioskowania wariacyjnego (ang. variational inference) przybliżymy tę wartość na podstawie rodziny rozkładów $q _ { \lambda } ( z | x )$, gdzie jeśli $q$ byłoby rozkładem Gaussa to $\lambda _ { x _ { i } } = \left( \mu _ { x _ { i } } , \sigma _ { x _ { i } } ^ { 2 } \right)$
+
+Do sprawdzenia jak dobrze przybliżamy te rozkłady możemy skorzystać z dywergencji Kullbacka-Leiblera, która mierzy ilość straconych informacji, kiedy używamy $q$ do zaokrąglenia $p$ (w natach)
+
+\begin{equation}
+\begin{split}
+\mathbb { K } \mathbb { L } \left( q _ { \lambda } ( z | x ) \| p ( z | x ) \right) =
+\mathbf { E } _ { q } \left[ \log \frac{q _ { \lambda } ( z | x )}{p ( z | x )} \right] = \\
+\mathbf { E } _ { q } \left[ \log p ( z | x ) \right] - \mathbf { E } _ { q } \left[ \log \frac{q _ { \lambda } ( x, z )}{p ( x )} \right] = \\
+\mathbf { E } _ { q } \left[ \log q _ { \lambda } ( z | x ) \right] - \mathbf { E } _ { q } [ \log p ( x , z ) ] + \log p ( x )
+\end{split}
+\end{equation}
+
+Celem jest znalezienie parametru $\lambda$, który minimalizuje tę sumę.
+
+\begin{equation}
+q _ { \lambda } ^ { * } ( z | x ) = \arg \min _ { \lambda } \mathbb { K } \mathbb { L } \left( q _ { \lambda } ( z | x ) \| p ( z | x ) \right)
+\end{equation}
+
+Niestety nie jest to obliczalne ze względu an ponownie występujący element $p(x)$, tak jak w dyskusji powyżej. Możemy jednak rozważyć funkcję 
+
+\begin{equation}
+E L B O ( \lambda ) = \mathbf { E } _ { q } [ \log p ( x , z ) ] - \mathbf { E } _ { q } \left[ \log q _ { \lambda } ( z | x ) \right]
+\end{equation}
+
+Zauważmy, że łączy się to z powyższą równością co przepiszmy jako
+
+\begin{equation}
+\log p ( x ) = E L B O ( \lambda ) + \mathbb { K } \mathbb { L } \left( q _ { \lambda } ( z | x ) \| p ( z | x ) \right)
+\end{equation}
+
+Skorzystajmy teraz z faktu, że dywergencja Kullbacka-Leiblera jest nieujemna, czyli zamiast ją minimalizować możemy maksymalizować $ELBO$. Wniosek jest taki, że $ELBO$ pozwala oszacowywać dolne prawdopodobieństwo na wystąpienie danej próbki, a dodatkowo jest to wartość obliczalna.
+
+Przy założeniu, że dane są niezależne, które wykonujemy w przypadku autoenkodera, możemy rozłożyć $ELBO$ na sumę składników, gdzie każdy dotyczy tylko pojedynczej próbki. Wtedy dla pojedynczego elementu otrzymujemy
+
+\begin{equation}
+\begin{split}
+E L B O _ { i } ( \lambda ) = \mathbf { E } _ { q } [ \log p ( x_i , z ) ] - \mathbf { E } _ { q } \left[ \log q _ { \lambda } ( z | x_i ) \right] = \\
+\mathbf { E } _ { q } [ \log p ( x_i | z ) p(z){} ] - \mathbf { E } _ { q } \left[ \log q _ { \lambda } ( z | x_i ) \right] = \\
+\mathbf { E } _ { q } [ \log p ( x_i | z ){} ] + \mathbf { E } _ { q } [ \log p(z){} ] - \mathbf { E } _ { q } \left[ \log q _ { \lambda } ( z | x_i ) \right] = \\
+\mathbf { E } _ { q } [ \log p ( x_i | z ){} ] - (\mathbf { E } _ { q } \left[ \log q _ { \lambda } ( z | x_i ) \right] - \mathbf { E } _ { q } [ \log p(z){} ])= \\
+\mathbf { E } _ { q } [ \log p ( x_i | z ){} ] - \mathbb { K } \mathbb { L } \left( q _ { \lambda } ( z | x _ { i } ) \| p ( z ) \right) = \\
+\mathbb { E } q _ { \lambda } ( z | x _ { i } ) \left[ \log p \left( x _ { i } | z \right) \right] - \mathbb { K } \mathbb { L } \left( q _ { \lambda } ( z | x _ { i } ) \| p ( z ) \right)
+\end{split}
+\end{equation}
+
+Teraz już możemy połączyć to z sieciami neuronowymi. Do znalezienia parametrów dla $q _ { \theta } ( z | x , \lambda )$ posłuży enkoder, który z $x$ produkuje $\lambda$. Natomiast dekoder bierze reprezentację ukrytą i zwraca parametry dla rozkładu danych $p _ { \phi } ( x | z )$. Wartości $\theta$ i $\phi$ możemy też traktować jako parametry dla sieci neuronowej. Wtedy funkcja straty, którą będziemy minimalizować prezentuje się następująco
+
+\begin{equation}
+l _ { i } ( \theta , \phi ) = -E L B O _ { i } ( \theta , \phi ) = -\mathbb { E } q _ { \theta } ( z | x _ { i } ) \left[ \log p _ { \phi } \left( x _ { i } | z \right) \right] + \mathbb { K } \mathbb { L } \left( q _ { \theta } ( z | x _ { i } ) \| p ( z ) \right)
+\end{equation}
+
+Interpretacja:
+\begin{itemize}[]
+\item $-\mathbb { E } q _ { \theta } ( z | x _ { i } ) \left[ \log p _ { \phi } \left( x _ { i } | z \right) \right]$ można utożsamiać z błędem rekonstrukcji, gdyż odpowiada temu składnik $\log p(x|z)$, a w trakcie treningu ta liczb powinna być jak najmniejsza. Dodatkowo jest to potęgowane przez $q(z|x)$, czyli pewność co do reprezentacji ukrytej.
+
+\item $\mathbb { K } \mathbb { L } \left( q _ { \theta } ( z | x _ { i } ) \| p ( z ) \right)$ można interpretować jako ilość przesyłanych informacji, ponieważ jeżeli model będzie chciał odejść od rozkładu a priori $p(z)$ to zapłaci za to karę, ale będzie w stanie przekazać wiadomość.
+\end{itemize}
 
 \section{Ocena jakości modelu}
 
@@ -108,4 +172,4 @@ To co do tej pory napisałem odnośnie autoenkodera wariacyjnego raczej trzeba u
 
 Krzywa ROC (Receiver Operating Characteristic) jest narzędziem do oceny poprawności klasyfikatora binarnego. Bazuje ona na wyliczaniu charakterystyki jakościowej modelu predykcji w wielu różnych punktach odcięcia. Działa to na takiej zasadzie, że model dla próbek przewiduje z jaką pewnością pochodzą z klasy 1. Następnie badane są różne progi i klasyfikowane przy ich użyciu obiekty. Dla uzyskanych klasyfikacji liczymy odsetek prawdziwych pozytywnych (TPR) oraz odsetek fałszywych pozytywnych (FPR) i nanosimy te wartości na wykres. Warto zauważyć, że dla losowego modelu jego wykres to prosta przechodząca przez (0, 0) i (1, 1). Dzieje się tak, ponieważ dla każdego progu połowa klasyfikacji będzie nad i połowa pod. Idealny model znajduje się w punkcie (0, 1).
 
-Przydatne jest również obliczenie pola powierzchni pod krzywą AUROC (ang. Area Under the ROC). Interpretuje się ją jako prawdopodobieństwo, że badany model predykcyjny oceni wyżej losowy element klasy pozytywnej od losowego elementu klasy negatywnej.
+Przydatne jest również obliczenie pola powierzchni pod krzywą AUROC (ang. Area Under the ROC). Pozwala ona ocenić ogólną skuteczność modelu bez wyboru konkretnego progu. Interpretuje się ją jako prawdopodobieństwo, że badany model predykcyjny oceni wyżej losowy element klasy pozytywnej od losowego elementu klasy negatywnej.

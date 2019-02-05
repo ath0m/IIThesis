@@ -7,7 +7,7 @@ Dane pochodzą z Uniwersytetu Duke'a (ang. Duke University). Są to zdjęcia gł
 \begin{figure}[h!]
     \centering
     \includegraphics[width=0.8\textwidth]{images/medical_description}
-    \caption{}
+    \caption{Przedstawienie konkretnych kanałów w próbce wraz z jego maską zmian}
     \label{fig:medical_description}
 \end{figure}
 
@@ -16,7 +16,7 @@ Dane pogrupowane są dla 110 pacjentów ze zdiagnozowanym nowotworem. Na rysunku
 \begin{figure}[h!]
     \centering
     \includegraphics[width=0.8\textwidth]{images/medical_sample}
-    \caption{}
+    \caption{Przykładowy zestaw obrazków dla pojedynczego pacjenta}
     \label{fig:medical_sample}
 \end{figure}
 
@@ -40,21 +40,21 @@ Decyzję podejmę na podstawie rezultatów osiąganych przez modele takie jak re
     \includegraphics[width=\linewidth]{images/cnn_patch_roc_v2}
     %\caption{}
   \end{subfigure}
-  \caption{}
+  \caption{Porównanie dokładności ze względu na różne rozmiary wycinków dla modeli uczonych metodą nadzorowaną}
   \label{fig:supervised_patches}
 \end{figure}
 
-Dodatkowo chciałem sprawdzić jak taki prosty model rzeczywiście poradzi sobie w przypadku problemu identyfikowania komórek nowotworowych u pacjenta. Nie jest to oczywiście najlepsza metoda dla podejścia nadzorowanego, ponieważ jedną z nich jest architektura U-Net, ale powinno to wystarczyć jako punkt odniesienia dla autoenkodera.
+Nie jest to oczywiście najlepsza metoda dla podejścia nadzorowanego, czym mogłoby być wykorzystanie architektury U-Net, ale powinno wystarczyć jako punkt odniesienia dla wymaganej ilości informacji w wycinku.
 
-Jako model rozważań wybrałem sieć splotową, a próg kategoryzacji jako najlepszy punkt odcięcia na krzywej ROC ograniczający odsetek wyników fałszywie pozytywnych do $1\%$.
+Dodatkowo w tym miejscu chciałbym wprowadzić słownictwo jakie będę używał do określania konkretnych próbek. Te odnoszące się da zmian nowotworowych będę nazywał pozytywnymi, a pozostałe negatywnymi.
 
-\subsection{Dodatkowe przygotowanie zbioru}
+\subsection{Dodatkowe analiza zbioru}
 
 Po zdecydowaniu się na łatki rozmiaru 22 i przygotowaniu takiego zbioru postanowiłem dodatkowo przeanalizować jego zawartość w celu znalezienia trywialnych przypadków. Jednym z nich były kawałki znajdujące się poza czaszkę, które nigdy nie są nowotworowe. Będą to obrazki o niskiej łącznej sumie pikseli, co zaprezentowane jest na histogramie \ref{fig:pixel_sums} (zwracam uwagę na różne skale na osiach). Na początku można zauważyć sporą grupę przypadków niepatologicznych. Sprawdziłem, że minimalna wartość sumy dla klasy odpowiadającej nowotworom wynosi $56.5$. Przy tym założeniu usunąłem wszystkie obrazki u sumie mniejszej, niż $42.0$ co zmniejszyło ilość danych o $45.5\%$, pozbywając się trywialnych próbek. Dany próg będę oczywiście uwzględniał w późniejszej klasyfikacji.
 
 \begin{figure}[h!]
     \centering
     \includegraphics[width=1.0\textwidth]{images/pixel_sums_v2}
-    \caption{}
+    \caption{Rozkład sum pikseli dla poszczególnych rodzajów próbek (zwracam uwagę na różne skale na osiach)}
     \label{fig:pixel_sums}
 \end{figure}

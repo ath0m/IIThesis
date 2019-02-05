@@ -4,7 +4,6 @@
 
 Autoenkoder wariacyjny jest bardzo interesującym modelem bazującym na rachunku prawdopodobieństwa, który stara się je oddolnie oszacowywać dla wystąpienia danego zjawiska. Jest to przydatne w problemie znajdywania odchyleń w danych, co pokazałem na bazie prostego zbioru jakim jest MNIST. Niestety przy przejściu do bardziej skomplikowanych próbek, model ten nie był w stanie znaleźć na tyle znaczących cech, które byłyby wystarczające do wykrywania zaburzeń z zadowalającą precyzją. Może być kilka przyczyn wystąpienia tego zjawiska, zaczynając od zbyt słabego modelu jakim jest sam autoenkoder po niewystarczającą obróbkę danych.
 
-
 \section{Usprawnienia}
 
 Skoro wyszło, że model zwraca przede wszystkim uwagę na jasność obrazków, to można byłoby zastosować normalizację w postaci wyrównywania histogramu (ang. histogram equalization). Metoda ta pozwala na zwiększenie kontrastu próbki, a dodatkowo rozciąga występowanie piksli na całą przestrzeń przez co zmienia się ich łączna suma wartości. Można wyobrazić sobie, że jasne obrazki zrobią się ciemniejsze i odwrotnie w przeciwnym przypadku. Jest szansa, że zmusiło by to model to położenia nacisku na inne cechy.

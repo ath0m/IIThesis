@@ -17,18 +17,18 @@ W tabeli \ref{table:results} przedstawiłem wyniki dla modeli z różnymi rozmia
     VAE 300-d   & 0.704 & 0.671 & 0.657 & 0.620 & 0.600 & 0.593 \\
     \toprule
     \end{tabular}
-    \caption{AUC przy danym modelu w danej epoce}
+    \caption{AUC ze względu an rozmiar reprezentacji ukrytej i w różnych stadiach nauki}
 	\label{table:results}
 \end{table}
 
 \section{Analiza}
 
-Zajmę się analizą modelu, który osiągnął najlepszy rezultat, czyli autoenkodera wariacyjnego bazującego na reprezentacji ukrytej rozmiaru 100 po 3 epokach nauki. Na rysunku \ref{fig:soft_vae} widać wykres z zaznaczonymi poszczególnymi składnikami kosztu, czyli koszt KLD i rekonstrukcji NLL. Przypomnę, że na bazie ich sumy liczona jest krzywa ROC. Można zauważyć specyficzny rozkład punktów. Ponad to na rysunku pokazane są przykładowe rekonstrukcje, ale prawdopodobnie ze względu na zbyt krótki czas nauki nie prezentują się one najlepiej.
+Zajmę się analizą modelu, który osiągnął najlepszy rezultat, czyli autoenkodera wariacyjnego bazującego na reprezentacji ukrytej rozmiaru 100 po 3 epokach nauki. Na rysunku \ref{fig:soft_vae} widać wykres z zaznaczonymi poszczególnymi składnikami kosztu, czyli koszt KLD i rekonstrukcji NLL. Przypomnę, że na bazie ich sumy liczona jest krzywa ROC. Można zauważyć specyficzny rozkład punktów. Ponadto na rysunku pokazane są przykładowe rekonstrukcje, ale prawdopodobnie ze względu na zbyt krótki czas nauki nie prezentują się one najlepiej.
 
 \begin{figure}[h!]
     \centering
     \includegraphics[width=1.0\textwidth]{images/soft_vae_v2}
-    \caption{}
+    \caption{Poszczególne składniki kosztu dla modelu z najlepszą separowalnością}
     \label{fig:soft_vae}
 \end{figure}
 
@@ -37,7 +37,7 @@ Chciałbym w tym miejscu wrócić to dwóch grup punktów, które się dobrze se
 \begin{figure}[h!]
     \centering
     \includegraphics[width=1.0\textwidth]{images/pixels_hist_v2}
-    \caption{}
+    \caption{Rozkład sum pikseli dla obrazków ze zbioru testowego}
     \label{fig:pixels_hist}
 \end{figure}
 
@@ -46,7 +46,7 @@ Można zauważyć, że występują dwa progi, które w łatwy sposób klasyfikuj
 \begin{figure}[h!]
     \centering
     \includegraphics[width=1.0\textwidth]{images/soft_vae_th_v2}
-    \caption{}
+    \caption{Zaznaczenie obrazków o konkretnych sumach pikseli}
     \label{fig:soft_vae_th}
 \end{figure}
 
