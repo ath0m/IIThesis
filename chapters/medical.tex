@@ -50,11 +50,11 @@ Dodatkowo w tym miejscu chciałbym wprowadzić słownictwo jakie będę używał
 
 \subsection{Dodatkowe analiza zbioru}
 
-Po zdecydowaniu się na łatki rozmiaru 22 i przygotowaniu takiego zbioru postanowiłem dodatkowo przeanalizować jego zawartość w celu znalezienia trywialnych przypadków. Jednym z nich były kawałki znajdujące się poza czaszkę, które nigdy nie są nowotworowe. Będą to obrazki o niskiej łącznej sumie pikseli, co zaprezentowane jest na histogramie \ref{fig:pixel_sums} (zwracam uwagę na różne skale na osiach). Na początku można zauważyć sporą grupę przypadków niepatologicznych. Sprawdziłem, że minimalna wartość sumy dla klasy odpowiadającej nowotworom wynosi $56.5$. Przy tym założeniu usunąłem wszystkie obrazki u sumie mniejszej, niż $42.0$ co zmniejszyło ilość danych o $45.5\%$, pozbywając się trywialnych próbek. Dany próg będę oczywiście uwzględniał w późniejszej klasyfikacji.
+Po zdecydowaniu się na łatki rozmiaru 22 i przygotowaniu takiego zbioru postanowiłem dodatkowo przeanalizować jego zawartość w celu znalezienia trywialnych przypadków. Jednym z nich były kawałki znajdujące się poza czaszkę, które nigdy nie są nowotworowe. Będą to obrazki o niskiej łącznej sumie pikseli, co zaprezentowane jest na histogramie \ref{fig:pixel_sums}. Na początku można zauważyć sporą grupę przypadków niepatologicznych. Sprawdziłem, że minimalna wartość sumy dla klasy odpowiadającej nowotworom wynosi $56.5$. Przy tym założeniu usunąłem wszystkie obrazki u sumie mniejszej, niż $42.0$ co zmniejszyło ilość danych o $45.5\%$, pozbywając się trywialnych próbek. Dany próg będę oczywiście uwzględniał w późniejszej klasyfikacji.
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=1.0\textwidth]{images/pixel_sums_v2}
-    \caption{Rozkład sum pikseli dla poszczególnych rodzajów próbek (zwracam uwagę na różne skale na osiach)}
+    \includegraphics[width=1.0\textwidth]{images/pixel_sums_v3}
+    \caption{Znormalizowany rozkład sum pikseli dla poszczególnych rodzajów próbek}
     \label{fig:pixel_sums}
 \end{figure}
